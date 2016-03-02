@@ -1,0 +1,9 @@
+language: go
+
+addons:
+    apt:
+        packages:
+        - libgl1-mesa-dev
+        - xorg-dev
+
+script: ./scripts/test-all.sh
