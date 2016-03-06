@@ -135,20 +135,14 @@ func (r *renderer) DrawPolyline(fb *Framebuffer, p *Polyline) {
 		return
 	}
 
+	mesh := NewMesh()
+	defer mesh.Destroy()
+	mesh.SetAttribute(AttributePosition, p.vertices)
+	mesh.Bind()
+
 	gl.UseProgram(r.program)
 
 	gl.BindFragDataLocation(r.program, 0, gl.Str("outputColor\x00"))
-
-	var vao uint32
-
-	gl.GenVertexArrays(1, &vao)
-	gl.BindVertexArray(vao)
-
-	var vbo uint32
-
-	gl.GenBuffers(1, &vbo)
-	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(p.vertices)*4, gl.Ptr(p.vertices), gl.DYNAMIC_DRAW)
 
 	position := uint32(gl.GetAttribLocation(r.program, gl.Str("position\x00")))
 	gl.EnableVertexAttribArray(position)
