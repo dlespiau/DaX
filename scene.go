@@ -1,6 +1,9 @@
 package dax
 
 import (
+	"fmt"
+	"reflect"
+
 	m "github.com/dlespiau/dax/math"
 )
 
@@ -31,6 +34,25 @@ type Scene struct {
 }
 
 func (s *Scene) Setup() {
+}
+
+func sceneSetup(s Scener) {
+	v := reflect.ValueOf(s).Elem()
+	t := v.Type()
+	for i := 0; i < t.NumField(); i++ {
+		f := t.Field(i)
+
+		tag := f.Tag.Get("dax")
+		if tag == "" {
+			continue
+		}
+
+		if tag == "property" {
+			fmt.Println(f.Name)
+		}
+
+	}
+	s.Setup()
 }
 
 func (s *Scene) TearDown() {

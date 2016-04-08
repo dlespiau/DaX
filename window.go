@@ -128,6 +128,6 @@ func (w *Window) SetScene(s Scener) {
 		// we always have valid scene
 		w.scene = new(Scene)
 	}
-	w.scene.Setup()
+	sceneSetup(w.scene)
 	w.scene.OnResize(w.fb, w.width, w.height)
 }
