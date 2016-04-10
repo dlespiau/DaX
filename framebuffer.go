@@ -7,11 +7,12 @@ import (
 )
 
 type Framebuffer struct {
-	renderer   *renderer
-	projection m.Mat4
+	renderer      *renderer
+	width, height int
+	projection    m.Mat4
 }
 
-func NewFramebuffer() *Framebuffer {
+func NewFramebuffer(width, height int) *Framebuffer {
 	fb := new(Framebuffer)
 	fb.renderer = newRenderer()
 	return fb
@@ -23,6 +24,11 @@ type Drawable interface {
 
 func (fb *Framebuffer) Draw(d Drawable) {
 	d.draw(fb)
+}
+
+func (fb *Framebuffer) setSize(width, height int) {
+	fb.width = width
+	fb.height = height
 }
 
 func (fb *Framebuffer) SetViewport(x, y, width, height int) {

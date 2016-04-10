@@ -36,7 +36,7 @@ func newWindow(app *Application, name string, width, height int) *Window {
 	glfw.SwapInterval(1)
 
 	// create OnScreen object
-	window.fb = NewFramebuffer()
+	window.fb = NewFramebuffer(width, height)
 
 	// window events
 	glfwWindow.SetCloseCallback(onClose)
