@@ -16,10 +16,10 @@ type Scener interface {
 	BackgroundColor() *Color
 
 	Update()
-	Draw(fb *Framebuffer)
+	Draw(fb Framebuffer)
 
 	// events
-	OnResize(fb *Framebuffer, width, height int)
+	OnResize(fb Framebuffer, width, height int)
 	OnKeyPressed()
 	OnKeyReleased()
 	OnMouseMoved(x, y float32)
@@ -72,13 +72,15 @@ func (s *Scene) SetBackgroundColor(r, g, b, a float32) {
 func (s *Scene) Update() {
 }
 
-func (s *Scene) Draw(fb *Framebuffer) {
+func (s *Scene) Draw(fb Framebuffer) {
 }
 
-func (s *Scene) OnResize(fb *Framebuffer, width, height int) {
-	fb.setSize(width, height)
+func (s *Scene) OnResize(fb Framebuffer, width, height int) {
+	fb.SetSize(width, height)
 	fb.SetViewport(0, 0, width, height)
-	fb.projection = m.Ortho(0, float32(width), float32(height), 0, -1, 1)
+
+	projection := m.Ortho(0, float32(width), float32(height), 0, -1, 1)
+	fb.SetProjection(&projection)
 }
 
 func (s *Scene) OnKeyPressed() {

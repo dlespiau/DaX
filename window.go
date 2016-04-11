@@ -9,7 +9,7 @@ type Window struct {
 	app           *Application
 	name          string
 	width, height int
-	fb            *Framebuffer
+	fb            Framebuffer
 	scene         Scener
 	glfwWindow    *glfw.Window
 }
@@ -36,7 +36,7 @@ func newWindow(app *Application, name string, width, height int) *Window {
 	glfw.SwapInterval(1)
 
 	// create OnScreen object
-	window.fb = NewFramebuffer(width, height)
+	window.fb = newOnScreen(width, height)
 
 	// window events
 	glfwWindow.SetCloseCallback(onClose)

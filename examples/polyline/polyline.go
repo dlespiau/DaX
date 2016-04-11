@@ -46,7 +46,7 @@ func (s *Scene) Update() {
 	}
 }
 
-func (s *Scene) Draw(fb *dax.Framebuffer) {
+func (s *Scene) Draw(fb dax.Framebuffer) {
 	fb.Draw(s.poly)
 }
 

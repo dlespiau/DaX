@@ -130,7 +130,7 @@ void main() {
 }
 ` + "\x00"
 
-func (r *renderer) DrawPolyline(fb *Framebuffer, p *Polyline) {
+func (r *renderer) DrawPolyline(fb Framebuffer, p *Polyline) {
 	if p.Size() == 0 {
 		return
 	}
@@ -149,7 +149,7 @@ func (r *renderer) DrawPolyline(fb *Framebuffer, p *Polyline) {
 	gl.VertexAttribPointer(position, 3, gl.FLOAT, false, 0, gl.PtrOffset(0))
 
 	mvp := gl.GetUniformLocation(r.program, gl.Str("mvp\x00"))
-	gl.UniformMatrix4fv(mvp, 1, false, &fb.projection[0])
+	gl.UniformMatrix4fv(mvp, 1, false, &fb.Projection()[0])
 
 	gl.DrawArrays(gl.LINE_STRIP, 0, int32(p.Size()))
 }
