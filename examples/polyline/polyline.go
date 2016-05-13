@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/dlespiau/dax"
+	dax "github.com/dlespiau/dax/lib"
 )
 
 type Scene struct {
