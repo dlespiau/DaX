@@ -13,6 +13,8 @@ type Dax struct {
 	options struct {
 		list_midi_devices bool
 	}
+
+	seq *midi.Sequencer
 }
 
 var app Dax
@@ -24,10 +26,8 @@ func init() {
 	flag.Parse()
 }
 
-func list_midi_devices() {
-	seq, _ := midi.NewSequencer("DaX", midi.OpenDuplex)
-
-	for _, device := range seq.GetDevices() {
+func (app *Dax) listMidiDevices() {
+	for _, device := range app.seq.GetDevices() {
 		fmt.Printf("%d: %s\n", device.Client, device.Name)
 		for _, port := range device.Ports {
 			fmt.Printf("    %d: %s\n", port.Port, port.Name)
@@ -38,8 +38,11 @@ func list_midi_devices() {
 func main() {
 	quit_early := false
 
+	app.seq, _ = midi.NewSequencer("DaX", midi.OpenDuplex)
+	app.seq.CreateControllerPort("Controller")
+
 	if app.options.list_midi_devices {
-		list_midi_devices()
+		app.listMidiDevices()
 		quit_early = true
 	}
 

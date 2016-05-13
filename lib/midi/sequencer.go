@@ -20,7 +20,7 @@ type Port struct {
 	Port int
 }
 
-type sequencer struct {
+type Sequencer struct {
 	handle *C.snd_seq_t
 }
 
@@ -32,7 +32,7 @@ const (
 	OpenDuplex               = 3
 )
 
-func NewSequencer(name string, direction OpenDirection) (*sequencer, error) {
+func NewSequencer(name string, direction OpenDirection) (*Sequencer, error) {
 	var handle *C.snd_seq_t
 	var ret C.int
 
@@ -47,42 +47,30 @@ func NewSequencer(name string, direction OpenDirection) (*sequencer, error) {
 	C.snd_seq_set_client_name(handle, cname)
 	C.free(unsafe.Pointer(cname))
 
-	seq := new(sequencer)
+	seq := new(Sequencer)
 	seq.handle = handle
 
 	return seq, nil
 }
 
-func (seq *sequencer) Close() {
+func (seq *Sequencer) Close() {
 	C.snd_seq_close(seq.handle)
 	seq.handle = nil
 }
 
-type PortCapability int
-
-const (
-	PortCapabilityRead PortCapability = 1 << iota
-	PortCapabilityWrite
-	PortCapabilitySyncRead
-	PortCapabilitySyncWrite
-	PortCapabilityDuplex
-	PortCapabilitySubsRead
-	PortCapabilitySubsWrite
-	PortCapabilityNoExport
-)
-
-func (seq *sequencer) CreatePort(name string, caps PortCapability) Port {
+func (seq *Sequencer) CreateControllerPort(name string) Port {
 	var port C.int
 
 	cname := C.CString(name)
-	port = C.snd_seq_create_simple_port(seq.handle, cname, C.uint(caps),
+	port = C.snd_seq_create_simple_port(seq.handle, cname,
+		C.SND_SEQ_PORT_CAP_WRITE|C.SND_SEQ_PORT_CAP_SUBS_WRITE,
 		C.SND_SEQ_PORT_TYPE_APPLICATION)
 	C.free(unsafe.Pointer(cname))
 
 	return Port{Port: int(port)}
 }
 
-func (seq *sequencer) getNbClients() int {
+func (seq *Sequencer) getNbClients() int {
 	var system_info *C.snd_seq_system_info_t
 
 	C.snd_seq_system_info_malloc(&system_info)
@@ -93,7 +81,7 @@ func (seq *sequencer) getNbClients() int {
 	return n_clients
 }
 
-func (seq *sequencer) queryNextClient(info *C.snd_seq_client_info_t) bool {
+func (seq *Sequencer) queryNextClient(info *C.snd_seq_client_info_t) bool {
 	return C.snd_seq_query_next_client(seq.handle, info) == 0
 }
 
@@ -101,7 +89,7 @@ func getNumPorts(info *C.snd_seq_client_info_t) int {
 	return int(C.snd_seq_client_info_get_num_ports(info))
 }
 
-func (seq *sequencer) GetDevices() []Device {
+func (seq *Sequencer) GetDevices() []Device {
 	var client_info *C.snd_seq_client_info_t
 	var port_info *C.snd_seq_port_info_t
 
