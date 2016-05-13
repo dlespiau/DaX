@@ -1,0 +1,31 @@
+
+== Core
+
+- fb Screenshot to image
+- load image as texture
+- Node object (position + orientation)
+
+== Scene
+
+- SolidColor scene
+- PixelShader scene
+- StillImage scene
+
+== MIDI
+
+- midi integration with the APC40
+- event when adding/removing a device
+- Expose scene properties as OSC endpoints
+
+== Video
+
+- MP4 container support
+- gosnappy!
+- HAP support
+- HAP with BC7
+
+== FX
+
+- ISF format
+- Vignette effect
+- TV effect
