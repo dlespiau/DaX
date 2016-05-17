@@ -1,9 +1,10 @@
 
 == Core
 
-- fb Screenshot to image
-- load image as texture
+- Load image as texture
 - Node object (position + orientation)
+- Animated gif creation
+- Video creation
 
 == Scene
 
