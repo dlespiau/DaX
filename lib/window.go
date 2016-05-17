@@ -89,11 +89,38 @@ func onClose(w *glfw.Window) {
 	window.scene.TearDown()
 }
 
+func (w *Window) doScreenshot() {
+	var filename string
+	n := 0
+
+	for {
+		filename = fmt.Sprintf("%s - %04d.png", w.name, n)
+		_, err := os.Stat(filename)
+		if err == nil {
+			n++
+			continue
+		}
+		break
+	}
+
+	if n > 9999 {
+		fmt.Errorf("Too many Screenshots!")
+		return
+	}
+
+	w.ScreenshotToFile(filename)
+}
+
 func onKeyEvent(w *glfw.Window, key glfw.Key, scancode int,
 	action glfw.Action, mods glfw.ModifierKey) {
 	window := getWindow(w)
 
 	if action == glfw.Press {
+		switch key {
+		case glfw.KeyF12:
+			window.doScreenshot()
+		}
+
 		window.scene.OnKeyPressed()
 	} else if action == glfw.Release {
 		window.scene.OnKeyReleased()
