@@ -43,5 +43,5 @@ func (p *Polyline) Positions() []float32 {
 	return p.vertices
 }
 func (p *Polyline) draw(fb Framebuffer) {
-	fb.render().DrawPolyline(fb, p)
+	fb.render().drawPolyline(fb, p)
 }

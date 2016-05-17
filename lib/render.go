@@ -130,7 +130,7 @@ void main() {
 }
 ` + "\x00"
 
-func (r *renderer) DrawPolyline(fb Framebuffer, p *Polyline) {
+func (r *renderer) drawPolyline(fb Framebuffer, p *Polyline) {
 	if p.Size() == 0 {
 		return
 	}
