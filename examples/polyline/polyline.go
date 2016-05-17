@@ -4,6 +4,8 @@ import (
 	dax "github.com/dlespiau/dax/lib"
 )
 
+var window *dax.Window
+
 type Scene struct {
 	dax.Scene
 
@@ -12,6 +14,7 @@ type Scene struct {
 }
 
 func (s *Scene) Setup() {
+	s.SetBackgroundColor(0, 0, 0, 1)
 	s.poly = dax.NewPolyline()
 }
 
@@ -53,7 +56,7 @@ func (s *Scene) Draw(fb dax.Framebuffer) {
 func main() {
 	var app dax.Application
 
-	window := app.CreateWindow("Polyline Example", 800, 600)
+	window = app.CreateWindow("Polyline Example", 800, 600)
 	window.SetScene(&Scene{})
 
 	app.Run()
