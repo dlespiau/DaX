@@ -1,6 +1,9 @@
 package dax
 
 import (
+	"image"
+	"unsafe"
+
 	"github.com/go-gl/gl/v3.3-core/gl"
 
 	m "github.com/dlespiau/dax/math"
@@ -15,6 +18,8 @@ type Framebuffer interface {
 	SetProjection(projection *m.Mat4)
 
 	Draw(d Drawable)
+
+	Screenshot() *image.RGBA
 
 	// private
 	render() *renderer
@@ -63,4 +68,14 @@ func (fb *OnScreen) SetSize(width, height int) {
 
 func (fb *OnScreen) SetViewport(x, y, width, height int) {
 	gl.Viewport(int32(x), int32(y), int32(width), int32(height))
+}
+
+func (fb *OnScreen) Screenshot() *image.RGBA {
+	pixels := make([]byte, fb.width*fb.height*4)
+
+	gl.ReadPixels(0, 0, int32(fb.width), int32(fb.height), gl.RGBA,
+		gl.UNSIGNED_BYTE, unsafe.Pointer(&pixels[0]))
+
+	return &image.RGBA{pixels, fb.width * 4,
+		image.Rect(0, 0, fb.width, fb.height)}
 }

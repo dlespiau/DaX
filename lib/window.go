@@ -1,6 +1,11 @@
 package dax
 
 import (
+	"fmt"
+	"image"
+	"image/png"
+	"os"
+
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.1/glfw"
 )
@@ -130,4 +135,23 @@ func (w *Window) SetScene(s Scener) {
 	}
 	sceneSetup(w.scene)
 	w.scene.OnResize(w.fb, w.width, w.height)
+}
+
+func (w *Window) Screenshot() *image.RGBA {
+	return w.fb.Screenshot()
+}
+
+func (w *Window) ScreenshotToFile(filename string) {
+	img := w.fb.Screenshot()
+
+	file, err := os.Create(filename)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	defer file.Close()
+
+	err = png.Encode(file, img)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
