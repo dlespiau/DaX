@@ -124,8 +124,8 @@ func (w *Window) SetScene(s Scener) {
 	if s != nil {
 		w.scene = s
 	} else {
-		// fallback to the default scene, mainaining the invariant that
-		// we always have valid scene
+		// fallback to the default scene, maintaining the invariant
+		// that we always have valid scene
 		w.scene = new(Scene)
 	}
 	sceneSetup(w.scene)
