@@ -98,7 +98,7 @@ void main() {
 `
 */
 
-var vertexShader = `
+const vertexShader = `
 #version 330 core
 
 in vec3 position;
@@ -122,7 +122,7 @@ void main() {
 ` + "0x00"
 */
 
-var fragmentShader = `
+const fragmentShader = `
 #version 330
 out vec4 outputColor;
 void main() {
