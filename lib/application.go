@@ -21,23 +21,26 @@ func init() {
 }
 
 type Application struct {
-	name   string
-	window *Window
+	name string
+
+	windows map[*glfw.Window]*Window
 }
 
 var _app *Application
 
 func (app *Application) addWindow(window *Window) {
 	// TODO: support multiple windows
-	app.window = window
+	app.windows[window.glfwWindow] = window
 }
 
 func (app *Application) Run() {
-	for !app.window.glfwWindow.ShouldClose() {
-		app.window.Update()
-		app.window.Draw()
-		app.window.glfwWindow.SwapBuffers()
-		glfw.PollEvents()
+	for _, window := range app.windows {
+		for !window.glfwWindow.ShouldClose() {
+			window.Update()
+			window.Draw()
+			window.glfwWindow.SwapBuffers()
+			glfw.PollEvents()
+		}
 	}
 }
 
@@ -51,5 +54,5 @@ func (app *Application) CreateWindow(name string, width, height int) *Window {
 }
 
 func getWindow(w *glfw.Window) *Window {
-	return _app.window
+	return _app.windows[w]
 }
