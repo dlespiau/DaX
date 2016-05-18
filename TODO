@@ -1,3 +1,11 @@
+= Examples
+
+- http://threejs.org/examples/#canvas_particles_random
+- http://threejs.org/examples/#webgl_buffergeometry_drawcalls
+- http://threejs.org/examples/#webgl_shader_lava
+- http://threejs.org/examples/#webgl_shader
+- http://threejs.org/examples/#webgl_postprocessing
+- Points from model + some kind of animation: http://threejs.org/examples/#webgl_points_dynamic
 
 == Core
 
@@ -5,6 +13,10 @@
 - Node object (position + orientation)
 - Animated gif creation
 - Video creation
+- Color.SetHSL()
+- F11 for fullscreen
+- Multi windows support (destroy support, share same context, example!)
+- Text support
 
 == Scene
 
