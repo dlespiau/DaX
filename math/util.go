@@ -116,11 +116,27 @@ func IsClamped(a, low, high float32) bool {
 	return a >= low && a <= high
 }
 
+// Return the minimum of a and b.
+func Min(a, b float32) float32 {
+	if a < b {
+		return a
+	}
+	return b
+}
+
 // If a > b, then a will be set to the value of b.
 func SetMin(a, b *float32) {
 	if *b < *a {
 		*a = *b
 	}
+}
+
+// Return the maximum of a and b.
+func Max(a, b float32) float32 {
+	if a > b {
+		return a
+	}
+	return b
 }
 
 // If a < b, then a will be set to the value of b.
