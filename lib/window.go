@@ -68,7 +68,7 @@ func (w *Window) Update() {
 func (w *Window) Draw() {
 	c := w.scene.BackgroundColor()
 
-	gl.ClearColor(c.r, c.g, c.b, c.a)
+	gl.ClearColor(c.R, c.G, c.B, c.A)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 	w.scene.Draw(w.fb)
 }

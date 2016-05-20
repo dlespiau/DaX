@@ -5,14 +5,14 @@ import (
 )
 
 type Color struct {
-	r, g, b, a float32
+	R, G, B, A float32
 }
 
 func (color *Color) FromRGBA(r, g, b, a float32) {
-	color.r = r
-	color.g = g
-	color.b = b
-	color.a = a
+	color.R = r
+	color.G = g
+	color.B = b
+	color.A = a
 }
 
 func (color *Color) FromRGB(r, g, b float32) {
@@ -58,13 +58,13 @@ func hue2rgb(p, q, t float32) float32 {
 //   http://en.wikipedia.org/wiki/HSL_color_space
 // h, s, l are in [0, 1]
 func (color *Color) FromHSL(h, s, l float32) {
-	color.a = 1.0
+	color.A = 1.0
 
 	if s == 0 {
 		// achromatic
-		color.r = l
-		color.g = l
-		color.b = l
+		color.R = l
+		color.G = l
+		color.B = l
 		return
 	}
 
@@ -76,9 +76,9 @@ func (color *Color) FromHSL(h, s, l float32) {
 	}
 	p := 2*l - q
 
-	color.r = hue2rgb(p, q, h+1./3)
-	color.g = hue2rgb(p, q, h)
-	color.b = hue2rgb(p, q, h-1./3)
+	color.R = hue2rgb(p, q, h+1./3)
+	color.G = hue2rgb(p, q, h)
+	color.B = hue2rgb(p, q, h-1./3)
 }
 
 // Convert a color to HSL.
@@ -86,9 +86,9 @@ func (color *Color) FromHSL(h, s, l float32) {
 //   http://en.wikipedia.org/wiki/HSL_color_space.
 // h, s, l are in [0, 1]
 func (color *Color) ToHSL() (h, s, l float32) {
-	r := color.r
-	g := color.g
-	b := color.b
+	r := color.R
+	g := color.G
+	b := color.B
 
 	max := math.Max(r, math.Max(g, b))
 	min := math.Min(r, math.Min(g, b))

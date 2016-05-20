@@ -63,10 +63,10 @@ func (s *Scene) BackgroundColor() *Color {
 }
 
 func (s *Scene) SetBackgroundColor(r, g, b, a float32) {
-	s.backgroundColor.r = r
-	s.backgroundColor.g = g
-	s.backgroundColor.b = b
-	s.backgroundColor.a = a
+	s.backgroundColor.R = r
+	s.backgroundColor.G = g
+	s.backgroundColor.B = b
+	s.backgroundColor.A = a
 }
 
 func (s *Scene) Update() {

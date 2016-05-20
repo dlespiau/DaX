@@ -57,9 +57,9 @@ func TestHSL(t *testing.T) {
 
 		color.FromHSL(test.h, test.s, test.l)
 		t.Logf("Test case #%d", i)
-		testEqualF(t, color.r, float32(test.r)/255, 1e-2)
-		testEqualF(t, color.g, float32(test.g)/255, 1e-2)
-		testEqualF(t, color.b, float32(test.b)/255, 1e-2)
-		assert.Equal(t, float32(1.0), color.a, 1e-2)
+		testEqualF(t, color.R, float32(test.r)/255, 1e-2)
+		testEqualF(t, color.G, float32(test.g)/255, 1e-2)
+		testEqualF(t, color.B, float32(test.b)/255, 1e-2)
+		assert.Equal(t, float32(1.0), color.A, 1e-2)
 	}
 }
