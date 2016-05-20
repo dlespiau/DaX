@@ -29,48 +29,48 @@ type Drawable interface {
 	draw(fb Framebuffer)
 }
 
-type OnScreen struct {
+type onScreen struct {
 	renderer      *renderer
 	width, height int
 	projection    m.Mat4
 }
 
-func newOnScreen(width, height int) *OnScreen {
-	fb := new(OnScreen)
+func newOnScreen(width, height int) *onScreen {
+	fb := new(onScreen)
 	fb.renderer = newRenderer()
 	return fb
 }
 
-func (fb *OnScreen) Size() (width, height int) {
+func (fb *onScreen) Size() (width, height int) {
 	return fb.width, fb.height
 }
 
-func (fb *OnScreen) Projection() *m.Mat4 {
+func (fb *onScreen) Projection() *m.Mat4 {
 	return &fb.projection
 }
 
-func (fb *OnScreen) SetProjection(projection *m.Mat4) {
+func (fb *onScreen) SetProjection(projection *m.Mat4) {
 	fb.projection = *projection
 }
 
-func (fb *OnScreen) render() *renderer {
+func (fb *onScreen) render() *renderer {
 	return fb.renderer
 }
 
-func (fb *OnScreen) Draw(d Drawable) {
+func (fb *onScreen) Draw(d Drawable) {
 	d.draw(fb)
 }
 
-func (fb *OnScreen) SetSize(width, height int) {
+func (fb *onScreen) SetSize(width, height int) {
 	fb.width = width
 	fb.height = height
 }
 
-func (fb *OnScreen) SetViewport(x, y, width, height int) {
+func (fb *onScreen) SetViewport(x, y, width, height int) {
 	gl.Viewport(int32(x), int32(y), int32(width), int32(height))
 }
 
-func (fb *OnScreen) Screenshot() *image.RGBA {
+func (fb *onScreen) Screenshot() *image.RGBA {
 	pixels := make([]byte, fb.width*fb.height*4)
 
 	gl.ReadPixels(0, 0, int32(fb.width), int32(fb.height), gl.RGBA,
