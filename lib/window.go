@@ -52,8 +52,8 @@ func newWindow(app *Application, name string, width, height int) *Window {
 	glfwWindow.SetCharCallback(onRuneEvent)
 
 	// mouse events
-	glfwWindow.SetMouseButtonCallback(OnMouseButton)
-	glfwWindow.SetCursorPosCallback(OnMouseMoved)
+	glfwWindow.SetMouseButtonCallback(onMouseButton)
+	glfwWindow.SetCursorPosCallback(onMouseMoved)
 
 	// Install the default scene
 	window.SetScene(new(Scene))
@@ -127,12 +127,12 @@ func onKeyEvent(w *glfw.Window, key glfw.Key, scancode int,
 	}
 }
 
-func OnMouseMoved(w *glfw.Window, x, y float64) {
+func onMouseMoved(w *glfw.Window, x, y float64) {
 	window := getWindow(w)
 	window.scene.OnMouseMoved(float32(x), float32(y))
 }
 
-func OnMouseButton(w *glfw.Window, button glfw.MouseButton,
+func onMouseButton(w *glfw.Window, button glfw.MouseButton,
 	action glfw.Action, mod glfw.ModifierKey) {
 	window := getWindow(w)
 	x, y := w.GetCursorPos()
