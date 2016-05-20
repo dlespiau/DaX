@@ -32,7 +32,6 @@
 - Node object (position + orientation)
 - Animated gif creation
 - Video creation
-- Color.SetHSL()
 - F11 for fullscreen
 - Multi windows support (destroy support, share same context, example!)
 - Text support
@@ -69,3 +68,7 @@
 - Vignette effect
 - TV effect
 - Sepia
+
+= Optimisations
+
+- A pass on HSL functions using Sam Hocevar's blog post
