@@ -1,14 +1,33 @@
-= Examples
+= Ideas
 
 - http://threejs.org/examples/#canvas_particles_random
 - http://threejs.org/examples/#webgl_buffergeometry_drawcalls
 - http://threejs.org/examples/#webgl_shader_lava
 - http://threejs.org/examples/#webgl_shader
 - http://threejs.org/examples/#webgl_postprocessing
-- Points from model + some kind of animation: http://threejs.org/examples/#webgl_points_dynamic
+- Points from model + some kind of animation
+    http://threejs.org/examples/#webgl_points_dynamic
+- http://threejs.org/examples/#webgl_custom_attributes_points2
+- Voronoi cells with color taken from an image
+    http://iquilezles.org/www/articles/cellularffx/cellularffx.htm
+
+= Demos
+
+- ASD: http://www.asd.gr/
+  http://www.iquilezles.org/www/material/icm2006/kostas_slides.pdf
+- Satori: http://zd3n.com/
 
 == Core
 
+- Logging facility
+- Camera (ortho, perspective)
+- Node
+- Material abstraction (aka Brush)
+- Basic shapes: cube, plane (rectangle), sphere, cylinder, ...
+- Standard 2D geometry paths and curves
+- AA 2D geometry by extruding contour
+    https://mattdesl.svbtle.com/drawing-lines-is-hard
+    https://github.com/tyt2y3/vaserenderer
 - Load image as texture
 - Node object (position + orientation)
 - Animated gif creation
@@ -17,6 +36,12 @@
 - F11 for fullscreen
 - Multi windows support (destroy support, share same context, example!)
 - Text support
+- Stats support (FPS, number of drall calls?)
+
+= Geometry
+
+- Topological Mesh Modelling (TopMod):
+  http://www.viz.tamu.edu/faculty/ergun/index.html
 
 == Scene
 
@@ -40,5 +65,7 @@
 == FX
 
 - ISF format
+- Bloom
 - Vignette effect
 - TV effect
+- Sepia
