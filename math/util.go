@@ -21,18 +21,6 @@ import (
 // are being executed when you change this.
 var Epsilon float32 = 1e-10
 
-// A direct copy of the math package's Abs. This is here for the mgl32
-// package, to prevent rampant type conversions during equality tests.
-func Abs(a float32) float32 {
-	if a < 0 {
-		return -a
-	} else if a == 0 {
-		return 0
-	}
-
-	return a
-}
-
 // FloatEqual is a safe utility function to compare floats.
 // It's Taken from http://floating-point-gui.de/errors/comparison/
 //
@@ -57,7 +45,6 @@ var (
 
 	InfPos = float32(math.Inf(1))
 	InfNeg = float32(math.Inf(-1))
-	NaN    = float32(math.NaN())
 )
 
 // FloatEqualThreshold is a utility function to compare floats.
@@ -80,22 +67,6 @@ func FloatEqualThreshold(a, b, epsilon float32) bool {
 	return diff/(Abs(a)+Abs(b)) < epsilon
 }
 
-// Clamp takes in a value and two thresholds. If the value is smaller than the low
-// threshold, it returns the low threshold. If it's bigger than the high threshold
-// it returns the high threshold. Otherwise it returns the value.
-//
-// Useful to prevent some functions from freaking out because a value was
-// teeeeechnically out of range.
-func Clamp(a, low, high float32) float32 {
-	if a < low {
-		return low
-	} else if a > high {
-		return high
-	}
-
-	return a
-}
-
 // ClampFunc generates a closure that returns its parameter
 // clamped to the range [low,high].
 func ClampFunc(low, high float32) func(float32) float32 {
@@ -116,27 +87,11 @@ func IsClamped(a, low, high float32) bool {
 	return a >= low && a <= high
 }
 
-// Return the minimum of a and b.
-func Min(a, b float32) float32 {
-	if a < b {
-		return a
-	}
-	return b
-}
-
 // If a > b, then a will be set to the value of b.
 func SetMin(a, b *float32) {
 	if *b < *a {
 		*a = *b
 	}
-}
-
-// Return the maximum of a and b.
-func Max(a, b float32) float32 {
-	if a > b {
-		return a
-	}
-	return b
 }
 
 // If a < b, then a will be set to the value of b.
