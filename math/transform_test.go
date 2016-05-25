@@ -1,158 +1,100 @@
-// Copyright 2014 The go-gl Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
 package math
 
 import (
-	"math"
 	"testing"
 )
 
-func TestHomogRotate3D(t *testing.T) {
-	tests := []struct {
-		Description string
-		Angle       float32
-		Axis        Vec3
-		Expected    Mat4
-	}{
-		{
-			"forward",
-			0, Vec3{0, 0, 0},
-			Ident4(),
-		},
-		{
-			"heading 90 degree",
-			DegToRad(90), Vec3{0, 1, 0},
-			Mat4{
-				0, 0, -1, 0,
-				0, 1, 0, 0,
-				1, 0, 0, 0,
-				0, 0, 0, 1,
-			},
-		},
-		{
-			"heading 180 degree",
-			DegToRad(180), Vec3{0, 1, 0},
-			Mat4{
-				-1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, -1, 0,
-				0, 0, 0, 1,
-			},
-		},
-		{
-			"attitude 90 degree",
-			DegToRad(90), Vec3{0, 0, 1},
-			Mat4{
-				0, 1, 0, 0,
-				-1, 0, 0, 0,
-				0, 0, 1, 0,
-				0, 0, 0, 1,
-			},
-		},
-		{
-			"bank 90 degree",
-			DegToRad(90), Vec3{1, 0, 0},
-			Mat4{
-				1, 0, 0, 0,
-				0, 0, 1, 0,
-				0, -1, 0, 0,
-				0, 0, 0, 1,
-			},
-		},
+func TestTransform_Iden(t *testing.T) {
+	t.Parallel()
+	var i Transform
+	i.Iden()
+	iden4 := Ident4()
+	if m := i.Mat4(); m != iden4 {
+		t.Error("Transform.Iden does not yield an identity Mat4")
+	}
+}
+
+func TestTransform_Translate(t *testing.T) {
+	t.Parallel()
+	tests := []Vec3{
+		{1, 2, 3},
+		{3, 2, 1},
+		{4, 6, 8},
+		{1, 5, 9},
+		{9, 8, 0},
+		{-9, 8, -0},
 	}
 
-	threshold := float32(math.Pow(10, -2))
-	for _, c := range tests {
-		if r := HomogRotate3D(c.Angle, c.Axis); !r.ApproxEqualThreshold(c.Expected, threshold) {
-			t.Errorf("%v failed: HomogRotate3D(%v, %v) != %v (got %v)", c.Description, c.Angle, c.Axis, c.Expected, r)
+	for i, test := range tests {
+		expect := Translate3D(test[0], test[1], test[2])
+		var tr [2]Transform
+		tr[0].Iden()
+		tr[0].Translate3f(test[0], test[1], test[2])
+		tr[1].Iden()
+		tr[1].TranslateVec3(&test)
+		trm := [2]Mat4{tr[0].Mat4(), tr[1].Mat4()}
+		if !expect.EqualThreshold(&trm[0], 1e-4) {
+			t.Errorf("[%d] Translate3f\n%snot equal to\n%s", i, expect.String(), trm[0].String())
+		}
+
+		if !expect.EqualThreshold(&trm[1], 1e-4) {
+			t.Errorf("[%d] Translate3f\n%snot equal to\n%s", i, expect.String(), trm[1].String())
 		}
 	}
 }
 
-func TestExtract3DScale(t *testing.T) {
-	tests := []struct {
-		M       Mat4
-		X, Y, Z float32
-	}{
-		{
-			Ident4(),
-			1, 1, 1,
-		}, {
-			Scale3D(1, 2, 3),
-			1, 2, 3,
-		}, {
-			Translate3D(10, 12, -5).Mul4(HomogRotate3D(math.Pi/2, Vec3{1, 0, 0})).Mul4(Scale3D(2, 3, 4)),
-			2, 3, 4,
-		},
+func TestTransform_SetTranslate(t *testing.T) {
+	t.Parallel()
+	tests := []Vec3{
+		{1, 2, 3},
+		{3, 2, 1},
+		{4, 6, 8},
+		{1, 5, 9},
+		{9, 8, 0},
+		{-9, 8, -0},
 	}
 
-	eq := FloatEqualFunc(1e-6)
-	for _, c := range tests {
-		if x, y, z := Extract3DScale(c.M); !eq(x, c.X) || !eq(y, c.Y) || !eq(z, c.Z) {
-			t.Errorf("ExtractScale(%v) != %v, %v, %v (got %v, %v, %v)", c.M, c.X, c.Y, c.Z, x, y, z)
+	for i, test := range tests {
+		expect := Translate3D(test[0], test[1], test[2])
+		var tr [2]Transform
+		tr[0].Iden()
+		tr[1].Iden()
+
+		tr[0].Translate3f(test[0], test[1], test[2])
+		tr[1].TranslateVec3(&test)
+		trm := [2]Mat4{tr[0].Mat4(), tr[1].Mat4()}
+		if !expect.EqualThreshold(&trm[0], 1e-4) {
+			t.Errorf("[%d] Translate3f\n%snot equal to\n%s", i, expect.String(), trm[0].String())
+		}
+
+		if !expect.EqualThreshold(&trm[1], 1e-4) {
+			t.Errorf("[%d] Translate3f\n%snot equal to\n%s", i, expect.String(), trm[1].String())
 		}
 	}
 }
 
-func TestExtractMaxScale(t *testing.T) {
-	tests := []struct {
-		M Mat4
-		V float32
-	}{
-		{
-			Ident4(),
-			1,
-		}, {
-			Scale3D(1, 2, 3),
-			3,
-		}, {
-			Translate3D(10, 12, -5).Mul4(HomogRotate3D(math.Pi/2, Vec3{1, 0, 0})).Mul4(Scale3D(2, 3, 4)),
-			4,
-		},
-	}
+/*
+func TestSpecial(t *testing.T) {
+	var tr Transform
+	tr.Iden()
 
-	eq := FloatEqualFunc(1e-6)
-	for _, c := range tests {
-		if r := ExtractMaxScale(c.M); !eq(r, c.V) {
-			t.Errorf("ExtractMaxScale(%v) != %v (got %v)", c.M, c.V, r)
-		}
-	}
+	v := Vec3{1, 0, 0}
+	v.Normalize()
+	q := QuatRotate(math.Pi, &v)
+	q.Normalize()
+	tr.RotateQuat(&q)
+
+	tr.Translate3f(0, 5, 0)
+
+	t.Errorf("\n%s", tr.String())
+	inv := (*Mat4)(&tr).Inverse()
+	t.Errorf("\n%s", inv.String())
+
+	local := Vec3{0, 1, 0}
+	world := tr.LocalToWorld(&local)
+	t.Errorf("%s", world.String())
+
+	local = tr.WorldToLocal(&world)
+	t.Errorf("%s", local.String())
 }
-
-func TestTransformCoordinate(t *testing.T) {
-	tests := [...]struct {
-		v Vec3
-		m Mat4
-
-		out Vec3
-	}{
-		{Vec3{1, 1, 1}, Ident4(), Vec3{1, 1, 1}},
-		{Vec3{1, 1, 1}, Translate3D(0, 1, 1).Mul4(Scale3D(2, 2, 2)), Vec3{2, 3, 3}},
-	}
-
-	for _, test := range tests {
-		if v := TransformCoordinate(test.v, test.m); !test.out.ApproxEqualThreshold(v, 1e-4) {
-			t.Errorf("TransformCoordinate on vector %v and matrix %v fails to give result %v (got %v)", test.v, test.m, test.out, v)
-		}
-	}
-}
-
-func TestTransformNormal(t *testing.T) {
-	tests := [...]struct {
-		v Vec3
-		m Mat4
-
-		out Vec3
-	}{
-		{Vec3{1, 1, 1}, Ident4(), Vec3{1, 1, 1}},
-		{Vec3{1, 1, 1}, Translate3D(0, 1, 1).Mul4(Scale3D(2, 2, 2)), Vec3{2, 2, 2}},
-	}
-
-	for _, test := range tests {
-		if v := TransformNormal(test.v, test.m); !test.out.ApproxEqualThreshold(v, 1e-4) {
-			t.Errorf("TransformNormal on vector %v and matrix %v fails to give result %v (got %v)", test.v, test.m, test.out, v)
-		}
-	}
-}
+*/
