@@ -9,7 +9,7 @@ import (
 func TestQuatMulIdentity(t *testing.T) {
 	t.Parallel()
 
-	i1 := Quat{1.0, Vec3{0, 0, 0}}
+	i1 := Quaternion{1.0, Vec3{0, 0, 0}}
 	i2 := QuatIdent()
 	i3 := QuatIdent()
 
@@ -134,7 +134,7 @@ func TestQuatMatRotateY(t *testing.T) {
 	if !result.EqualThreshold(&expected, 1e-4) {
 		t.Errorf("Quaternion rotating vector doesn't match 3D matrix method. Got: %v, Expected: %v", result, expected)
 	}
-	m := q.Mul(&Quat{0, v})
+	m := q.Mul(&Quaternion{0, v})
 	c := q.Conjugated()
 	mcv := m.Mul(&c).V
 	expected = mcv
@@ -176,7 +176,7 @@ func BenchmarkQuatRotateConjugate(b *testing.B) {
 		q.Normalized()
 		b.StartTimer()
 
-		m := q.Mul(&Quat{0, v})
+		m := q.Mul(&Quaternion{0, v})
 		c := q.Conjugated()
 
 		_ = m.Mul(&c).V
@@ -218,7 +218,7 @@ func TestMat4ToQuat(t *testing.T) {
 	tests := []struct {
 		Description string
 		Rotation    *Mat4
-		Expected    *Quat
+		Expected    *Quaternion
 	}{
 		{
 			"forward",
@@ -233,7 +233,7 @@ func TestMat4ToQuat(t *testing.T) {
 				1, 0, 0, 0,
 				0, 0, 0, 1,
 			},
-			&Quat{0.7071, Vec3{0, 0.7071, 0}},
+			&Quaternion{0.7071, Vec3{0, 0.7071, 0}},
 		},
 		{
 			"heading 180 degree",
@@ -243,7 +243,7 @@ func TestMat4ToQuat(t *testing.T) {
 				0, 0, -1, 0,
 				0, 0, 0, 1,
 			},
-			&Quat{0, Vec3{0, 1, 0}},
+			&Quaternion{0, Vec3{0, 1, 0}},
 		},
 		{
 			"attitude 90 degree",
@@ -253,7 +253,7 @@ func TestMat4ToQuat(t *testing.T) {
 				0, 0, 1, 0,
 				0, 0, 0, 1,
 			},
-			&Quat{0.7071, Vec3{0, 0, 0.7071}},
+			&Quaternion{0.7071, Vec3{0, 0, 0.7071}},
 		},
 		{
 			"bank 90 degree",
@@ -263,7 +263,7 @@ func TestMat4ToQuat(t *testing.T) {
 				0, -1, 0, 0,
 				0, 0, 0, 1,
 			},
-			&Quat{0.7071, Vec3{0.7071, 0, 0}},
+			&Quaternion{0.7071, Vec3{0.7071, 0, 0}},
 		},
 	}
 
@@ -282,7 +282,7 @@ func TestQuatRotate(t *testing.T) {
 		Description string
 		Angle       float32
 		Axis        *Vec3
-		Expected    *Quat
+		Expected    *Quaternion
 	}{
 		{
 			"forward",
@@ -292,22 +292,22 @@ func TestQuatRotate(t *testing.T) {
 		{
 			"heading 90 degree",
 			DegToRad(90), &Vec3{0, 1, 0},
-			&Quat{0.7071, Vec3{0, 0.7071, 0}},
+			&Quaternion{0.7071, Vec3{0, 0.7071, 0}},
 		},
 		{
 			"heading 180 degree",
 			DegToRad(180), &Vec3{0, 1, 0},
-			&Quat{0, Vec3{0, 1, 0}},
+			&Quaternion{0, Vec3{0, 1, 0}},
 		},
 		{
 			"attitude 90 degree",
 			DegToRad(90), &Vec3{0, 0, 1},
-			&Quat{0.7071, Vec3{0, 0, 0.7071}},
+			&Quaternion{0.7071, Vec3{0, 0, 0.7071}},
 		},
 		{
 			"bank 90 degree",
 			DegToRad(90), &Vec3{1, 0, 0},
-			&Quat{0.7071, Vec3{0.7071, 0, 0}},
+			&Quaternion{0.7071, Vec3{0.7071, 0, 0}},
 		},
 	}
 
@@ -326,7 +326,7 @@ func TestQuatLookAtV(t *testing.T) {
 	tests := []struct {
 		Description     string
 		Eye, Center, Up *Vec3
-		Expected        *Quat
+		Expected        *Quaternion
 	}{
 		{
 			"forward",
@@ -340,28 +340,28 @@ func TestQuatLookAtV(t *testing.T) {
 			&Vec3{0, 0, 0},
 			&Vec3{1, 0, 0},
 			&Vec3{0, 1, 0},
-			&Quat{0.7071, Vec3{0, 0.7071, 0}},
+			&Quaternion{0.7071, Vec3{0, 0.7071, 0}},
 		},
 		{
 			"heading 180 degree",
 			&Vec3{0, 0, 0},
 			&Vec3{0, 0, 1},
 			&Vec3{0, 1, 0},
-			&Quat{0, Vec3{0, 1, 0}},
+			&Quaternion{0, Vec3{0, 1, 0}},
 		},
 		{
 			"attitude 90 degree",
 			&Vec3{0, 0, 0},
 			&Vec3{0, 0, -1},
 			&Vec3{1, 0, 0},
-			&Quat{0.7071, Vec3{0, 0, 0.7071}},
+			&Quaternion{0.7071, Vec3{0, 0, 0.7071}},
 		},
 		{
 			"bank 90 degree",
 			&Vec3{0, 0, 0},
 			&Vec3{0, -1, 0},
 			&Vec3{0, 0, -1},
-			&Quat{0.7071, Vec3{0.7071, 0, 0}},
+			&Quaternion{0.7071, Vec3{0.7071, 0, 0}},
 		},
 	}
 
@@ -541,7 +541,7 @@ func TestQuatMatConversion(t *testing.T) {
 
 func TestQuatGetter(t *testing.T) {
 	t.Parallel()
-	tests := []*Quat{
+	tests := []*Quaternion{
 		{0, Vec3{0, 0, 0}},
 		{1, Vec3{2, 3, 4}},
 		{-4, Vec3{-3, -2, -1}},
@@ -565,15 +565,15 @@ func TestQuatGetter(t *testing.T) {
 func TestQuatEqual(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		A, B     *Quat
+		A, B     *Quaternion
 		Expected bool
 	}{
-		{&Quat{1, Vec3{0, 0, 0}}, &Quat{1, Vec3{0, 0, 0}}, true},
-		{&Quat{1, Vec3{2, 3, 4}}, &Quat{1, Vec3{2, 3, 4}}, true},
-		{&Quat{0.0000000000001, Vec3{0, 0, 0}}, &Quat{0, Vec3{0, 0, 0}}, true},
-		{&Quat{MaxValue, Vec3{1, 0, 0}}, &Quat{MaxValue, Vec3{1, 0, 0}}, true},
-		{&Quat{0, Vec3{0, 1, 0}}, &Quat{1, Vec3{0, 0, 0}}, false},
-		{&Quat{1, Vec3{2, 3, 0}}, &Quat{-4, Vec3{5, 6, 0}}, false},
+		{&Quaternion{1, Vec3{0, 0, 0}}, &Quaternion{1, Vec3{0, 0, 0}}, true},
+		{&Quaternion{1, Vec3{2, 3, 4}}, &Quaternion{1, Vec3{2, 3, 4}}, true},
+		{&Quaternion{0.0000000000001, Vec3{0, 0, 0}}, &Quaternion{0, Vec3{0, 0, 0}}, true},
+		{&Quaternion{MaxValue, Vec3{1, 0, 0}}, &Quaternion{MaxValue, Vec3{1, 0, 0}}, true},
+		{&Quaternion{0, Vec3{0, 1, 0}}, &Quaternion{1, Vec3{0, 0, 0}}, false},
+		{&Quaternion{1, Vec3{2, 3, 0}}, &Quaternion{-4, Vec3{5, 6, 0}}, false},
 	}
 
 	for _, c := range tests {
@@ -586,13 +586,13 @@ func TestQuatEqual(t *testing.T) {
 func TestQuatOrientationEqual(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		A, B     *Quat
+		A, B     *Quaternion
 		Expected bool
 	}{
-		{&Quat{1, Vec3{0, 0, 0}}, &Quat{1, Vec3{0, 0, 0}}, true},
-		{&Quat{0, Vec3{0, 1, 0}}, &Quat{0, Vec3{0, -1, 0}}, true},
-		{&Quat{0, Vec3{0, 1, 0}}, &Quat{1, Vec3{0, 0, 0}}, false},
-		{&Quat{1, Vec3{2, 3, 0}}, &Quat{-4, Vec3{5, 6, 0}}, false},
+		{&Quaternion{1, Vec3{0, 0, 0}}, &Quaternion{1, Vec3{0, 0, 0}}, true},
+		{&Quaternion{0, Vec3{0, 1, 0}}, &Quaternion{0, Vec3{0, -1, 0}}, true},
+		{&Quaternion{0, Vec3{0, 1, 0}}, &Quaternion{1, Vec3{0, 0, 0}}, false},
+		{&Quaternion{1, Vec3{2, 3, 0}}, &Quaternion{-4, Vec3{5, 6, 0}}, false},
 	}
 
 	for _, c := range tests {
@@ -605,12 +605,12 @@ func TestQuatOrientationEqual(t *testing.T) {
 func TestQuatAdd(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		A, B     *Quat
-		Expected *Quat
+		A, B     *Quaternion
+		Expected *Quaternion
 	}{
-		{&Quat{0, Vec3{0, 0, 0}}, &Quat{0, Vec3{0, 0, 0}}, &Quat{0, Vec3{0, 0, 0}}},
-		{&Quat{1, Vec3{0, 0, 0}}, &Quat{1, Vec3{0, 0, 0}}, &Quat{2, Vec3{0, 0, 0}}},
-		{&Quat{1, Vec3{2, 3, 4}}, &Quat{5, Vec3{6, 7, 8}}, &Quat{6, Vec3{8, 10, 12}}},
+		{&Quaternion{0, Vec3{0, 0, 0}}, &Quaternion{0, Vec3{0, 0, 0}}, &Quaternion{0, Vec3{0, 0, 0}}},
+		{&Quaternion{1, Vec3{0, 0, 0}}, &Quaternion{1, Vec3{0, 0, 0}}, &Quaternion{2, Vec3{0, 0, 0}}},
+		{&Quaternion{1, Vec3{2, 3, 4}}, &Quaternion{5, Vec3{6, 7, 8}}, &Quaternion{6, Vec3{8, 10, 12}}},
 	}
 
 	for _, c := range tests {
@@ -623,12 +623,12 @@ func TestQuatAdd(t *testing.T) {
 func TestQuatSub(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		A, B     *Quat
-		Expected *Quat
+		A, B     *Quaternion
+		Expected *Quaternion
 	}{
-		{&Quat{0, Vec3{0, 0, 0}}, &Quat{0, Vec3{0, 0, 0}}, &Quat{0, Vec3{0, 0, 0}}},
-		{&Quat{1, Vec3{0, 0, 0}}, &Quat{1, Vec3{0, 0, 0}}, &Quat{0, Vec3{0, 0, 0}}},
-		{&Quat{1, Vec3{2, 3, 4}}, &Quat{5, Vec3{6, 7, 8}}, &Quat{-4, Vec3{-4, -4, -4}}},
+		{&Quaternion{0, Vec3{0, 0, 0}}, &Quaternion{0, Vec3{0, 0, 0}}, &Quaternion{0, Vec3{0, 0, 0}}},
+		{&Quaternion{1, Vec3{0, 0, 0}}, &Quaternion{1, Vec3{0, 0, 0}}, &Quaternion{0, Vec3{0, 0, 0}}},
+		{&Quaternion{1, Vec3{2, 3, 4}}, &Quaternion{5, Vec3{6, 7, 8}}, &Quaternion{-4, Vec3{-4, -4, -4}}},
 	}
 
 	for _, c := range tests {
@@ -641,13 +641,13 @@ func TestQuatSub(t *testing.T) {
 func TestQuatScale(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		Rotation *Quat
+		Rotation *Quaternion
 		Scalar   float32
-		Expected *Quat
+		Expected *Quaternion
 	}{
-		{&Quat{0, Vec3{0, 0, 0}}, 1, &Quat{0, Vec3{0, 0, 0}}},
-		{&Quat{1, Vec3{0, 0, 0}}, 2, &Quat{2, Vec3{0, 0, 0}}},
-		{&Quat{1, Vec3{2, 3, 4}}, 3, &Quat{3, Vec3{6, 9, 12}}},
+		{&Quaternion{0, Vec3{0, 0, 0}}, 1, &Quaternion{0, Vec3{0, 0, 0}}},
+		{&Quaternion{1, Vec3{0, 0, 0}}, 2, &Quaternion{2, Vec3{0, 0, 0}}},
+		{&Quaternion{1, Vec3{2, 3, 4}}, 3, &Quaternion{3, Vec3{6, 9, 12}}},
 	}
 
 	for _, c := range tests {
@@ -660,14 +660,14 @@ func TestQuatScale(t *testing.T) {
 func TestQuatLen(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		Rotation Quat
+		Rotation Quaternion
 		Expected float32
 	}{
-		{Quat{0, Vec3{1, 0, 0}}, 1},
-		{Quat{0, Vec3{0.0000000000001, 0, 0}}, 0},
-		{Quat{0, Vec3{MaxValue, 1, 0}}, InfPos},
-		{Quat{4, Vec3{1, 2, 3}}, Sqrt(1*1 + 2*2 + 3*3 + 4*4)},
-		{Quat{0, Vec3{3.1, 4.2, 1.3}}, Sqrt(3.1*3.1 + 4.2*4.2 + 1.3*1.3)},
+		{Quaternion{0, Vec3{1, 0, 0}}, 1},
+		{Quaternion{0, Vec3{0.0000000000001, 0, 0}}, 0},
+		{Quaternion{0, Vec3{MaxValue, 1, 0}}, InfPos},
+		{Quaternion{4, Vec3{1, 2, 3}}, Sqrt(1*1 + 2*2 + 3*3 + 4*4)},
+		{Quaternion{0, Vec3{3.1, 4.2, 1.3}}, Sqrt(3.1*3.1 + 4.2*4.2 + 1.3*1.3)},
 	}
 
 	for _, c := range tests {
@@ -684,15 +684,15 @@ func TestQuatLen(t *testing.T) {
 func TestQuatNormalize(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		Rotation *Quat
-		Expected *Quat
+		Rotation *Quaternion
+		Expected *Quaternion
 	}{
-		{&Quat{0, Vec3{0, 0, 0}}, &Quat{1, Vec3{0, 0, 0}}},
-		{&Quat{0, Vec3{1, 0, 0}}, &Quat{0, Vec3{1, 0, 0}}},
-		{&Quat{0, Vec3{0.0000000000001, 0, 0}}, &Quat{0, Vec3{1, 0, 0}}},
-		{&Quat{0, Vec3{MaxValue, 1, 0}}, &Quat{0, Vec3{1, 0, 0}}},
-		{&Quat{4, Vec3{1, 2, 3}}, &Quat{4.0 / 5.477, Vec3{1.0 / 5.477, 2.0 / 5.477, 3.0 / 5.477}}},
-		{&Quat{0, Vec3{3.1, 4.2, 1.3}}, &Quat{0, Vec3{3.1 / 5.3795, 4.2 / 5.3795, 1.3 / 5.3795}}},
+		{&Quaternion{0, Vec3{0, 0, 0}}, &Quaternion{1, Vec3{0, 0, 0}}},
+		{&Quaternion{0, Vec3{1, 0, 0}}, &Quaternion{0, Vec3{1, 0, 0}}},
+		{&Quaternion{0, Vec3{0.0000000000001, 0, 0}}, &Quaternion{0, Vec3{1, 0, 0}}},
+		{&Quaternion{0, Vec3{MaxValue, 1, 0}}, &Quaternion{0, Vec3{1, 0, 0}}},
+		{&Quaternion{4, Vec3{1, 2, 3}}, &Quaternion{4.0 / 5.477, Vec3{1.0 / 5.477, 2.0 / 5.477, 3.0 / 5.477}}},
+		{&Quaternion{0, Vec3{3.1, 4.2, 1.3}}, &Quaternion{0, Vec3{3.1 / 5.3795, 4.2 / 5.3795, 1.3 / 5.3795}}},
 	}
 
 	for _, c := range tests {
@@ -705,12 +705,12 @@ func TestQuatNormalize(t *testing.T) {
 func TestQuatInverse(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		Rotation *Quat
-		Expected *Quat
+		Rotation *Quaternion
+		Expected *Quaternion
 	}{
-		{&Quat{0, Vec3{1, 0, 0}}, &Quat{0, Vec3{-1, 0, 0}}},
-		{&Quat{3, Vec3{-1, 4, 3}}, &Quat{3.0 / 35.0, Vec3{1.0 / 35.0, -4.0 / 35.0, -3.0 / 35.0}}},
-		{&Quat{1, Vec3{0, 0, 2}}, &Quat{1.0 / 5.0, Vec3{0, 0, -2.0 / 5.0}}},
+		{&Quaternion{0, Vec3{1, 0, 0}}, &Quaternion{0, Vec3{-1, 0, 0}}},
+		{&Quaternion{3, Vec3{-1, 4, 3}}, &Quaternion{3.0 / 35.0, Vec3{1.0 / 35.0, -4.0 / 35.0, -3.0 / 35.0}}},
+		{&Quaternion{1, Vec3{0, 0, 2}}, &Quaternion{1.0 / 5.0, Vec3{0, 0, -2.0 / 5.0}}},
 	}
 
 	for _, c := range tests {
@@ -723,18 +723,18 @@ func TestQuatInverse(t *testing.T) {
 func TestQuatSlerp(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		A, B     *Quat
+		A, B     *Quaternion
 		Scalar   float32
-		Expected *Quat
+		Expected *Quaternion
 	}{
-		{&Quat{0, Vec3{0, 0, 0}}, &Quat{0, Vec3{0, 0, 0}}, 0, &Quat{1, Vec3{0, 0, 0}}},
-		{&Quat{0, Vec3{1, 0, 0}}, &Quat{0, Vec3{1, 0, 0}}, 0.5, &Quat{0, Vec3{1, 0, 0}}},
-		{&Quat{1, Vec3{0, 0, 0}}, &Quat{0, Vec3{1, 0, 0}}, 0.5, &Quat{0.7071067811865475, Vec3{0.7071067811865475, 0, 0}}},
-		{&Quat{0.5, Vec3{-0.5, -0.5, 0.5}}, &Quat{0.996, Vec3{-0.080, -0.080, 0}}, 1, &Quat{0.996, Vec3{-0.080, -0.080, 0}}},
-		{&Quat{0.5, Vec3{-0.5, -0.5, 0.5}}, &Quat{0.996, Vec3{-0.080, -0.080, 0}}, 0, &Quat{0.5, Vec3{-0.5, -0.5, 0.5}}},
-		{&Quat{0.5, Vec3{-0.5, -0.5, 0.5}}, &Quat{0.996, Vec3{-0.080, -0.080, 0}}, 0.2, &Quat{0.6553097459373098, Vec3{-0.44231939784548874, -0.44231939784548874, 0.4237176207195655}}},
-		{&Quat{0.996, Vec3{-0.080, -0.080, 0}}, &Quat{0.5, Vec3{-0.5, -0.5, 0.5}}, 0.8, &Quat{0.6553097459373098, Vec3{-0.44231939784548874, -0.44231939784548874, 0.4237176207195655}}},
-		{&Quat{1, Vec3{0, 0, 0}}, &Quat{-0.9999999, Vec3{0, 0, 0}}, 0, &Quat{1, Vec3{0, 0, 0}}},
+		{&Quaternion{0, Vec3{0, 0, 0}}, &Quaternion{0, Vec3{0, 0, 0}}, 0, &Quaternion{1, Vec3{0, 0, 0}}},
+		{&Quaternion{0, Vec3{1, 0, 0}}, &Quaternion{0, Vec3{1, 0, 0}}, 0.5, &Quaternion{0, Vec3{1, 0, 0}}},
+		{&Quaternion{1, Vec3{0, 0, 0}}, &Quaternion{0, Vec3{1, 0, 0}}, 0.5, &Quaternion{0.7071067811865475, Vec3{0.7071067811865475, 0, 0}}},
+		{&Quaternion{0.5, Vec3{-0.5, -0.5, 0.5}}, &Quaternion{0.996, Vec3{-0.080, -0.080, 0}}, 1, &Quaternion{0.996, Vec3{-0.080, -0.080, 0}}},
+		{&Quaternion{0.5, Vec3{-0.5, -0.5, 0.5}}, &Quaternion{0.996, Vec3{-0.080, -0.080, 0}}, 0, &Quaternion{0.5, Vec3{-0.5, -0.5, 0.5}}},
+		{&Quaternion{0.5, Vec3{-0.5, -0.5, 0.5}}, &Quaternion{0.996, Vec3{-0.080, -0.080, 0}}, 0.2, &Quaternion{0.6553097459373098, Vec3{-0.44231939784548874, -0.44231939784548874, 0.4237176207195655}}},
+		{&Quaternion{0.996, Vec3{-0.080, -0.080, 0}}, &Quaternion{0.5, Vec3{-0.5, -0.5, 0.5}}, 0.8, &Quaternion{0.6553097459373098, Vec3{-0.44231939784548874, -0.44231939784548874, 0.4237176207195655}}},
+		{&Quaternion{1, Vec3{0, 0, 0}}, &Quaternion{-0.9999999, Vec3{0, 0, 0}}, 0, &Quaternion{1, Vec3{0, 0, 0}}},
 	}
 
 	for _, c := range tests {
@@ -747,12 +747,12 @@ func TestQuatSlerp(t *testing.T) {
 func TestQuatDot(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		A, B     *Quat
+		A, B     *Quaternion
 		Expected float32
 	}{
-		{&Quat{0, Vec3{0, 0, 0}}, &Quat{0, Vec3{0, 0, 0}}, 0},
-		{&Quat{0, Vec3{1, 2, 3}}, &Quat{0, Vec3{4, 5, 6}}, 32},
-		{&Quat{4, Vec3{1, 2, 3}}, &Quat{8, Vec3{5, 6, 7}}, 70},
+		{&Quaternion{0, Vec3{0, 0, 0}}, &Quaternion{0, Vec3{0, 0, 0}}, 0},
+		{&Quaternion{0, Vec3{1, 2, 3}}, &Quaternion{0, Vec3{4, 5, 6}}, 32},
+		{&Quaternion{4, Vec3{1, 2, 3}}, &Quaternion{8, Vec3{5, 6, 7}}, 70},
 	}
 
 	for _, c := range tests {
@@ -764,12 +764,12 @@ func TestQuatDot(t *testing.T) {
 
 func TestQuat_Equal(t *testing.T) {
 	t.Parallel()
-	q1 := Quat{1, Vec3{2, 3, 4}}
-	q2 := Quat{1, Vec3{2, 3, 4}}
+	q1 := Quaternion{1, Vec3{2, 3, 4}}
+	q2 := Quaternion{1, Vec3{2, 3, 4}}
 	if !q1.Equal(&q2) {
 		t.Errorf("quaternion should be equal %+v, %+v", q1, q2)
 	}
-	q2 = Quat{2, Vec3{6, 2, 5}}
+	q2 = Quaternion{2, Vec3{6, 2, 5}}
 	if q1.Equal(&q2) {
 		t.Errorf("quaternion shouldnt be equal %+v, %+v", q1, q2)
 	}
@@ -785,13 +785,13 @@ func TestQuatBetweenVector3(t *testing.T) {
 func TestQuatLerp(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		A, B     Quat
+		A, B     Quaternion
 		Amount   float32
-		Expected Quat
+		Expected Quaternion
 	}{
-		{Quat{0, Vec3{0, 0, 0}}, Quat{0, Vec3{0, 0, 0}}, 0, Quat{0, Vec3{0, 0, 0}}},
-		{Quat{0, Vec3{1, 2, 3}}, Quat{0, Vec3{4, 5, 6}}, 0.5, Quat{0, Vec3{2.5, 3.5, 4.5}}},
-		{Quat{4, Vec3{1, 2, 3}}, Quat{8, Vec3{5, 6, 7}}, 0.75, Quat{7, Vec3{4, 5, 6}}},
+		{Quaternion{0, Vec3{0, 0, 0}}, Quaternion{0, Vec3{0, 0, 0}}, 0, Quaternion{0, Vec3{0, 0, 0}}},
+		{Quaternion{0, Vec3{1, 2, 3}}, Quaternion{0, Vec3{4, 5, 6}}, 0.5, Quaternion{0, Vec3{2.5, 3.5, 4.5}}},
+		{Quaternion{4, Vec3{1, 2, 3}}, Quaternion{8, Vec3{5, 6, 7}}, 0.75, Quaternion{7, Vec3{4, 5, 6}}},
 	}
 
 	for _, c := range tests {
@@ -805,11 +805,11 @@ func TestQuatBetweenVectors(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		A, B     Vec3
-		Expected Quat
+		Expected Quaternion
 	}{
-		{Vec3{0, 0, 1}, Vec3{1, 1, 0}, Quat{0.70710677, Vec3{-0.49999997, 0.49999997, 0}}},
-		{Vec3{1, 2, 3}, Vec3{4, 5, 6}, Quat{0.9936377, Vec3{-0.04597839, 0.09195679, -0.045978405}}},
-		{Vec3{1, 2, 3}, Vec3{5, 6, 7}, Quat{0.99205077, Vec3{-0.051373072, 0.10274618, -0.0513731}}},
+		{Vec3{0, 0, 1}, Vec3{1, 1, 0}, Quaternion{0.70710677, Vec3{-0.49999997, 0.49999997, 0}}},
+		{Vec3{1, 2, 3}, Vec3{4, 5, 6}, Quaternion{0.9936377, Vec3{-0.04597839, 0.09195679, -0.045978405}}},
+		{Vec3{1, 2, 3}, Vec3{5, 6, 7}, Quaternion{0.99205077, Vec3{-0.051373072, 0.10274618, -0.0513731}}},
 	}
 
 	for _, c := range tests {
@@ -821,12 +821,12 @@ func TestQuatBetweenVectors(t *testing.T) {
 
 func TestQuat_Ident(t *testing.T) {
 	t.Parallel()
-	ident := Quat{W: 1, V: Vec3{0, 0, 0}}
+	ident := Quaternion{W: 1, V: Vec3{0, 0, 0}}
 	if ident != QuatIdent() {
 		t.Errorf("QuatIdent = %v, want %v", QuatIdent(), ident)
 	}
 
-	var q Quat
+	var q Quaternion
 	q.Iden()
 
 	if ident != q {
@@ -835,22 +835,22 @@ func TestQuat_Ident(t *testing.T) {
 }
 
 var quatTests = []struct {
-	q1, q2, add, sub, mul, scale, conj, normal, inv, svec Quat
+	q1, q2, add, sub, mul, scale, conj, normal, inv, svec Quaternion
 	f                                                     float32
 	v1                                                    Vec3
 	mat3                                                  Mat3
 }{
 	{
-		q1:     Quat{W: 1, V: Vec3{2, 3, 4}},
-		q2:     Quat{W: 1, V: Vec3{2, 3, 4}},
-		add:    Quat{W: 2, V: Vec3{4, 6, 8}},
-		sub:    Quat{W: 0, V: Vec3{0, 0, 0}},
-		mul:    Quat{W: -28, V: Vec3{4, 6, 8}},
-		scale:  Quat{W: 2, V: Vec3{4, 6, 8}},
-		conj:   Quat{W: 1, V: Vec3{-2, -3, -4}},
-		normal: Quat{W: 1.0 / Sqrt(30.0), V: Vec3{Sqrt(2.0 / 15.0), Sqrt(3.0 / 10.0), float32(2.0 * Sqrt(2.0/15.0))}},
-		inv:    Quat{W: 1.0 / 30.0, V: Vec3{-1.0 / 15.0, -1.0 / 10.0, -2.0 / 15.0}},
-		svec:   Quat{W: -15, V: Vec3{10, -5, 10}},
+		q1:     Quaternion{W: 1, V: Vec3{2, 3, 4}},
+		q2:     Quaternion{W: 1, V: Vec3{2, 3, 4}},
+		add:    Quaternion{W: 2, V: Vec3{4, 6, 8}},
+		sub:    Quaternion{W: 0, V: Vec3{0, 0, 0}},
+		mul:    Quaternion{W: -28, V: Vec3{4, 6, 8}},
+		scale:  Quaternion{W: 2, V: Vec3{4, 6, 8}},
+		conj:   Quaternion{W: 1, V: Vec3{-2, -3, -4}},
+		normal: Quaternion{W: 1.0 / Sqrt(30.0), V: Vec3{Sqrt(2.0 / 15.0), Sqrt(3.0 / 10.0), float32(2.0 * Sqrt(2.0/15.0))}},
+		inv:    Quaternion{W: 1.0 / 30.0, V: Vec3{-1.0 / 15.0, -1.0 / 10.0, -2.0 / 15.0}},
+		svec:   Quaternion{W: -15, V: Vec3{10, -5, 10}},
 		v1:     Vec3{3, 2, 1},
 		mat3: Mat3{-2.0 / 3.0, 2.0 / 3.0, 1.0 / 3.0,
 			2.0 / 15.0, -1.0 / 3.0, 14.0 / 15.0,
@@ -858,16 +858,16 @@ var quatTests = []struct {
 		f: 2,
 	},
 	{
-		q1:     Quat{W: 5, V: Vec3{6, 7, 8}},
-		q2:     Quat{W: 3, V: Vec3{4, 5, 6}},
-		add:    Quat{W: 8, V: Vec3{10, 12, 14}},
-		sub:    Quat{W: 2, V: Vec3{2, 2, 2}},
-		mul:    Quat{W: -92, V: Vec3{40, 42, 56}},
-		scale:  Quat{W: 2.5, V: Vec3{3, 3.5, 4}},
-		conj:   Quat{W: 5, V: Vec3{-6, -7, -8}},
-		normal: Quat{W: float32(5.0 / Sqrt(174.0)), V: Vec3{float32(Sqrt(6.0 / 29.0)), float32(7.0 / Sqrt(174.0)), float32(4.0 * Sqrt(2.0/87.0))}},
-		inv:    Quat{W: 5.0 / 174.0, V: Vec3{-1.0 / 29.0, -7.0 / 174.0, -4.0 / 87.0}},
-		svec:   Quat{W: -41.75, V: Vec3{22.5, 10.25, 22}},
+		q1:     Quaternion{W: 5, V: Vec3{6, 7, 8}},
+		q2:     Quaternion{W: 3, V: Vec3{4, 5, 6}},
+		add:    Quaternion{W: 8, V: Vec3{10, 12, 14}},
+		sub:    Quaternion{W: 2, V: Vec3{2, 2, 2}},
+		mul:    Quaternion{W: -92, V: Vec3{40, 42, 56}},
+		scale:  Quaternion{W: 2.5, V: Vec3{3, 3.5, 4}},
+		conj:   Quaternion{W: 5, V: Vec3{-6, -7, -8}},
+		normal: Quaternion{W: float32(5.0 / Sqrt(174.0)), V: Vec3{float32(Sqrt(6.0 / 29.0)), float32(7.0 / Sqrt(174.0)), float32(4.0 * Sqrt(2.0/87.0))}},
+		inv:    Quaternion{W: 5.0 / 174.0, V: Vec3{-1.0 / 29.0, -7.0 / 174.0, -4.0 / 87.0}},
+		svec:   Quaternion{W: -41.75, V: Vec3{22.5, 10.25, 22}},
 		mat3: Mat3{-26.0 / 87.0, 82.0 / 87.0, 13.0 / 87.0,
 			2.0 / 87.0, -13.0 / 87.0, 86.0 / 87.0,
 			83.0 / 87.0, 26.0 / 87.0, 2.0 / 87.0},
@@ -879,7 +879,7 @@ var quatTests = []struct {
 func TestQuat_AddOf(t *testing.T) {
 	t.Parallel()
 	for i, test := range quatTests {
-		var q Quat
+		var q Quaternion
 		q.AddOf(&test.q1, &test.q2)
 		if !q.EqualThreshold(&test.add, 1e-4) {
 			t.Errorf("[%d] q1 + q2 = %v, want %v", i, q, test.add)
@@ -901,7 +901,7 @@ func TestQuat_AddWith(t *testing.T) {
 func TestQuat_SubOf(t *testing.T) {
 	t.Parallel()
 	for i, test := range quatTests {
-		var q Quat
+		var q Quaternion
 		q.SubOf(&test.q1, &test.q2)
 		if !q.EqualThreshold(&test.sub, 1e-4) {
 			t.Errorf("[%d] q1 - q2 = %v, want %v", i, q, test.sub)
@@ -933,7 +933,7 @@ func TestQuat_Mul(t *testing.T) {
 func TestQuat_MulOf(t *testing.T) {
 	t.Parallel()
 	for i, test := range quatTests {
-		var q Quat
+		var q Quaternion
 		q.MulOf(&test.q1, &test.q2)
 		if !q.EqualThreshold(&test.mul, 1e-4) {
 			t.Errorf("[%d] q1 * q2 = %v, want %v", i, q, test.mul)
@@ -965,7 +965,7 @@ func TestQuat_Scale(t *testing.T) {
 func TestQuat_ScaleOf(t *testing.T) {
 	t.Parallel()
 	for i, test := range quatTests {
-		var q Quat
+		var q Quaternion
 		q.ScaleOf(test.f, &test.q1)
 		if !q.EqualThreshold(&test.scale, 1e-4) {
 			t.Errorf("[%d] q1 * f = %v, want %v", i, q, test.scale)
@@ -1008,7 +1008,7 @@ func TestQuat_Conjugate(t *testing.T) {
 func TestQuat_ConjugateOf(t *testing.T) {
 	t.Parallel()
 	for i, test := range quatTests {
-		var q Quat
+		var q Quaternion
 		q.ConjugateOf(&test.q1)
 		if !q.EqualThreshold(&test.conj, 1e-4) {
 			t.Errorf("[%d] conj(q1) = %v, want %v", i, q, test.conj)
@@ -1040,7 +1040,7 @@ func TestQuat_Normalize(t *testing.T) {
 func TestQuat_SetNormalizeOf(t *testing.T) {
 	t.Parallel()
 	for i, test := range quatTests {
-		var q Quat
+		var q Quaternion
 		q.SetNormalizedOf(&test.q1)
 		if !q.EqualThreshold(&test.normal, 1e-4) {
 			t.Errorf("[%d] unit(q1) = %v, want %v", i, q, test.normal)
@@ -1072,7 +1072,7 @@ func TestQuat_Invert(t *testing.T) {
 func TestQuat_InverseOf(t *testing.T) {
 	t.Parallel()
 	for i, test := range quatTests {
-		var q Quat
+		var q Quaternion
 		q.InverseOf(&test.q1)
 		if !q.EqualThreshold(&test.inv, 1e-4) {
 			t.Errorf("[%d] inv(q1) = %v, want %v", i, q, test.inv)

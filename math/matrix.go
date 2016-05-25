@@ -1109,7 +1109,7 @@ func (m1 *Mat3) AbsOf(m2 *Mat3) {
 }
 
 // SetOrientation sets this matrix to the orientation matrix represented by that quaternion.
-func (m1 *Mat3) SetOrientation(q1 *Quat) {
+func (m1 *Mat3) SetOrientation(q1 *Quaternion) {
 	w, x, y, z := q1.W, q1.V[0], q1.V[1], q1.V[2]
 	m1[0] = 1 - 2*y*y - 2*z*z
 	m1[1] = 2*x*y + 2*w*z
@@ -1973,7 +1973,7 @@ func (m1 *Mat3x4) Abs() Mat3x4 {
 }
 
 // SetOrientationAndPos sets this matrix to represent this quaternion's orientation and this vector's position.
-func (m1 *Mat3x4) SetOrientationAndPos(q1 *Quat, v1 *Vec3) {
+func (m1 *Mat3x4) SetOrientationAndPos(q1 *Quaternion, v1 *Vec3) {
 	w, x, y, z := q1.W, q1.V[0], q1.V[1], q1.V[2]
 	m1[0] = 1 - 2*y*y - 2*z*z
 	m1[1] = 2*x*y + 2*w*z

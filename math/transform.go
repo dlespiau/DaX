@@ -44,13 +44,13 @@ func (t *Transform) SetTranslateVec3(v *Vec3) {
 }
 
 // RotateQuat rotates this transform by q.
-func (t *Transform) RotateQuat(q *Quat) {
+func (t *Transform) RotateQuat(q *Quaternion) {
 	m := q.Mat4()
 	((*Mat4)(t)).Mul4With(&m)
 }
 
 // SetRotateQuat rotates this transform by q.
-func (t *Transform) SetRotateQuat(q *Quat) {
+func (t *Transform) SetRotateQuat(q *Quaternion) {
 	*t = Transform(q.Mat4())
 }
 

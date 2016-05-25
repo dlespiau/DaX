@@ -29,7 +29,7 @@ const (
 // and "V", the vector component. The vector component is considered to
 // be the part in 3D space, while W (loosely interpreted) is its 4D coordinate.
 // i² = j² = k² = ijk
-type Quat struct {
+type Quaternion struct {
 	W float32
 	V Vec3
 }
@@ -39,62 +39,62 @@ type Quat struct {
 //
 // As with all identities, multiplying any quaternion by this will yield the
 // same quaternion you started with.
-func QuatIdent() Quat {
-	return Quat{1, Vec3{0, 0, 0}}
+func QuatIdent() Quaternion {
+	return Quaternion{1, Vec3{0, 0, 0}}
 }
 
 // QuatRotate creates an angle from an axis and an angle relative to that axis.
 //
 // This is cheaper than HomogRotate3D.
-func QuatRotate(angle float32, axis *Vec3) Quat {
+func QuatRotate(angle float32, axis *Vec3) Quaternion {
 	s, c := Sin(angle*0.5), Cos(angle*0.5)
-	return Quat{c, axis.Mul(s)}
+	return Quaternion{c, axis.Mul(s)}
 }
 
 // Iden sets this quaternion to the identity quaternion.
-func (q1 *Quat) Iden() {
+func (q1 *Quaternion) Iden() {
 	q1.W = 1
 	q1.V = Vec3{0, 0, 0}
 }
 
 // X is a convenient alias for q.V[0]
-func (q1 *Quat) X() float32 {
+func (q1 *Quaternion) X() float32 {
 	return q1.V[0]
 }
 
 // Y is a convenient alias for q.V[1]
-func (q1 *Quat) Y() float32 {
+func (q1 *Quaternion) Y() float32 {
 	return q1.V[1]
 }
 
 // Z is a convenient alias for q.V[2]
-func (q1 *Quat) Z() float32 {
+func (q1 *Quaternion) Z() float32 {
 	return q1.V[2]
 }
 
 // I is a convenient alias for q.V[0]
-func (q1 *Quat) I() float32 {
+func (q1 *Quaternion) I() float32 {
 	return q1.V[0]
 }
 
 // J is a convenient alias for q.V[1]
-func (q1 *Quat) J() float32 {
+func (q1 *Quaternion) J() float32 {
 	return q1.V[1]
 }
 
 // K is a convenient alias for q.V[2]
-func (q1 *Quat) K() float32 {
+func (q1 *Quaternion) K() float32 {
 	return q1.V[2]
 }
 
 // Add adds two quaternions. It's no more complicated than adding their W and V
 // components.
-func (q1 *Quat) Add(q2 *Quat) Quat {
-	return Quat{q1.W + q2.W, q1.V.Add(&q2.V)}
+func (q1 *Quaternion) Add(q2 *Quaternion) Quaternion {
+	return Quaternion{q1.W + q2.W, q1.V.Add(&q2.V)}
 }
 
 // AddOf is a memory friendly version of add. q1 = q2 + q3
-func (q1 *Quat) AddOf(q2, q3 *Quat) {
+func (q1 *Quaternion) AddOf(q2, q3 *Quaternion) {
 	q1.W = q2.W + q3.W
 	q1.V.AddOf(&q2.V, &q3.V)
 }
@@ -102,19 +102,19 @@ func (q1 *Quat) AddOf(q2, q3 *Quat) {
 // AddWith is a memory friendly version of Add. In quaternion cases you COULD
 // use AddOf with q1 twice: q1.AddOf(&q1,&q2). This is here just for API
 // consistency.
-func (q1 *Quat) AddWith(q2 *Quat) {
+func (q1 *Quaternion) AddWith(q2 *Quaternion) {
 	q1.W += q2.W
 	q1.V.AddWith(&q2.V)
 }
 
 // Sub subtracts two quaternions. It's no more complicated than subtracting
 // their W and V components.
-func (q1 *Quat) Sub(q2 *Quat) Quat {
-	return Quat{q1.W - q2.W, q1.V.Sub(&q2.V)}
+func (q1 *Quaternion) Sub(q2 *Quaternion) Quaternion {
+	return Quaternion{q1.W - q2.W, q1.V.Sub(&q2.V)}
 }
 
 // SubOf is a memory friendly version of add. q1 = q2 + q3
-func (q1 *Quat) SubOf(q2, q3 *Quat) {
+func (q1 *Quaternion) SubOf(q2, q3 *Quaternion) {
 	q1.W = q2.W - q3.W
 	q1.V.SubOf(&q2.V, &q3.V)
 }
@@ -122,7 +122,7 @@ func (q1 *Quat) SubOf(q2, q3 *Quat) {
 // SubWith is a memory friendly version of Sub. In quaternion cases you COULD
 // use SubOf with q1 twice: q1.SubOf(&q1,&q2). This is here just for API
 // consistency.
-func (q1 *Quat) SubWith(q2 *Quat) {
+func (q1 *Quaternion) SubWith(q2 *Quaternion) {
 	q1.W -= q2.W
 	q1.V.SubWith(&q2.V)
 }
@@ -130,7 +130,7 @@ func (q1 *Quat) SubWith(q2 *Quat) {
 // Mul multiplies two quaternions. This can be seen as a rotation. Note that
 // Multiplication is NOT commutative, meaning q1.Mul(q2) does not necessarily
 // equal q2.Mul(q1).
-func (q1 *Quat) Mul(q2 *Quat) Quat {
+func (q1 *Quaternion) Mul(q2 *Quaternion) Quaternion {
 	var c Vec3
 	c.CrossOf(&q1.V, &q2.V)
 	var m1 Vec3
@@ -140,11 +140,11 @@ func (q1 *Quat) Mul(q2 *Quat) Quat {
 	var a1 Vec3
 	a1.AddOf(&c, &m1)
 	//q1.V.Cross(&q2.V).Add(q2.V.Mul(q1.W)).Add(q1.V.Mul(q2.W))
-	return Quat{q1.W*q2.W - q1.V.Dot(&q2.V), a1.Add(&m2)}
+	return Quaternion{q1.W*q2.W - q1.V.Dot(&q2.V), a1.Add(&m2)}
 }
 
 // MulOf is a memory friendly version of Mul.
-func (q1 *Quat) MulOf(q2, q3 *Quat) {
+func (q1 *Quaternion) MulOf(q2, q3 *Quaternion) {
 	q1.W = q2.W*q3.W - q2.V.Dot(&q3.V)
 
 	q1.V.CrossOf(&q2.V, &q3.V)
@@ -154,7 +154,7 @@ func (q1 *Quat) MulOf(q2, q3 *Quat) {
 
 // MulWith is a memory friendly version of Mul. Use this when you want q1 both
 // as dest and arg.
-func (q1 *Quat) MulWith(q2 *Quat) {
+func (q1 *Quaternion) MulWith(q2 *Quaternion) {
 	w := q1.W
 	v := q1.V
 	q1.W = w*q2.W - v.Dot(&q2.V)
@@ -165,52 +165,52 @@ func (q1 *Quat) MulWith(q2 *Quat) {
 }
 
 // Scale scales every element of the quaternion by some constant factor.
-func (q1 *Quat) Scale(c float32) Quat {
-	return Quat{q1.W * c, Vec3{q1.V[0] * c, q1.V[1] * c, q1.V[2] * c}}
+func (q1 *Quaternion) Scale(c float32) Quaternion {
+	return Quaternion{q1.W * c, Vec3{q1.V[0] * c, q1.V[1] * c, q1.V[2] * c}}
 }
 
 // ScaleOf scales every element of the quaternion by some constant factor.
-func (q1 *Quat) ScaleOf(c float32, q2 *Quat) {
+func (q1 *Quaternion) ScaleOf(c float32, q2 *Quaternion) {
 	q1.W = c * q2.W
 	q1.V.MulOf(c, &q2.V)
 }
 
 // ScaleWith scales every element of the quaternion by some constant factor.
-func (q1 *Quat) ScaleWith(c float32) {
+func (q1 *Quaternion) ScaleWith(c float32) {
 	q1.W *= c
 	q1.V.MulWith(c)
 }
 
 // Conjugated returns the conjugate of a quaternion. Equivalent to
 // Quat{q1.W, q1.V.Mul(-1)}
-func (q1 *Quat) Conjugated() Quat {
-	return Quat{q1.W, q1.V.Mul(-1)}
+func (q1 *Quaternion) Conjugated() Quaternion {
+	return Quaternion{q1.W, q1.V.Mul(-1)}
 }
 
 // ConjugateOf is a memory friendly version of Conjugated. q1 = conjugate(q2)
-func (q1 *Quat) ConjugateOf(q2 *Quat) {
+func (q1 *Quaternion) ConjugateOf(q2 *Quaternion) {
 	q1.W = q2.W
 	q1.V.MulOf(-1, &q2.V)
 }
 
 // Conjugate is a memory friendly version of Conjugated. q1 = conjugate(q1)
-func (q1 *Quat) Conjugate() {
+func (q1 *Quaternion) Conjugate() {
 	q1.V.MulWith(-1)
 }
 
 // Len returns the Length of the quaternion, also known as its Norm. This is the
 // same thing as the Len of a Vec4.
-func (q1 *Quat) Len() float32 {
+func (q1 *Quaternion) Len() float32 {
 	return Sqrt(q1.W*q1.W + q1.V[0]*q1.V[0] + q1.V[1]*q1.V[1] + q1.V[2]*q1.V[2])
 }
 
 // Norm is an alias for Len() since both are very common terms.
-func (q1 *Quat) Norm() float32 {
+func (q1 *Quaternion) Norm() float32 {
 	return q1.Len()
 }
 
 // Normalized Normalizes the quaternion, returning its versor (unit quaternion).
-func (q1 *Quat) Normalized() Quat {
+func (q1 *Quaternion) Normalized() Quaternion {
 	length := q1.Len()
 
 	if FloatEqual(1, length) {
@@ -225,12 +225,12 @@ func (q1 *Quat) Normalized() Quat {
 
 	il := 1.0 / length
 
-	return Quat{q1.W * il, q1.V.Mul(il)}
+	return Quaternion{q1.W * il, q1.V.Mul(il)}
 }
 
 // SetNormalizedOf Normalizes the quaternion, returning its versor (unit
 // quaternion).
-func (q1 *Quat) SetNormalizedOf(q2 *Quat) {
+func (q1 *Quaternion) SetNormalizedOf(q2 *Quaternion) {
 	length := q2.Len()
 
 	if FloatEqual(1, length) {
@@ -254,7 +254,7 @@ func (q1 *Quat) SetNormalizedOf(q2 *Quat) {
 }
 
 // Normalize Normalizes the quaternion in place.
-func (q1 *Quat) Normalize() {
+func (q1 *Quaternion) Normalize() {
 	length := q1.Len()
 
 	if FloatEqual(1, length) {
@@ -281,19 +281,19 @@ func (q1 *Quat) Normalize() {
 // This method computes the square norm by directly adding the sum of the
 // squares of all terms instead of actually squaring q1.Len(), both for
 // performance and precision.
-func (q1 *Quat) Inverse() Quat {
+func (q1 *Quaternion) Inverse() Quaternion {
 	c := q1.Conjugated()
 	return c.Scale(1 / q1.Dot(q1))
 }
 
 // InverseOf is a memory friendly version of Inverse.
-func (q1 *Quat) InverseOf(q2 *Quat) {
+func (q1 *Quaternion) InverseOf(q2 *Quaternion) {
 	q1.ConjugateOf(q2)
 	q1.ScaleWith(1.0 / q2.Dot(q2))
 }
 
 // Invert is a memory friendly version of Inverse.
-func (q1 *Quat) Invert() {
+func (q1 *Quaternion) Invert() {
 	q1.Conjugate()
 	q1.ScaleWith(1.0 / q1.Dot(q1))
 }
@@ -306,7 +306,7 @@ func (q1 *Quat) Invert() {
 //
 // In practice, we hand-compute this in the general case and simplify to save a
 // few operations.
-func (q1 *Quat) Rotate(v *Vec3) Vec3 {
+func (q1 *Quaternion) Rotate(v *Vec3) Vec3 {
 	var cross Vec3
 	cross.CrossOf(&q1.V, v)
 	// v + 2q_w * (q_v x v) + 2q_v x (q_v x v)
@@ -339,8 +339,8 @@ func (q1 *Quat) Rotate(v *Vec3) Vec3 {
 
 // AddScaledVec takes an input vector and scaled it by f then adds that rotation
 // to q1.
-func (q1 *Quat) AddScaledVec(f float32, v1 *Vec3) {
-	q2 := Quat{0, Vec3{v1[0] * f, v1[1] * f, v1[2] * f}}
+func (q1 *Quaternion) AddScaledVec(f float32, v1 *Vec3) {
+	q2 := Quaternion{0, Vec3{v1[0] * f, v1[1] * f, v1[2] * f}}
 	q2.MulWith(q1)
 	q1.W += q2.W * 0.5
 	q1.V[0] += q2.V[0] * 0.5
@@ -350,7 +350,7 @@ func (q1 *Quat) AddScaledVec(f float32, v1 *Vec3) {
 
 // Mat4 returns the homogeneous 3D rotation matrix corresponding to the
 // quaternion. with last row and last column as [0 0 0 1]
-func (q1 *Quat) Mat4() Mat4 {
+func (q1 *Quaternion) Mat4() Mat4 {
 	w, x, y, z := q1.W, q1.V[0], q1.V[1], q1.V[2]
 	return Mat4{
 		1 - 2*y*y - 2*z*z, 2*x*y + 2*w*z, 2*x*z - 2*w*y, 0,
@@ -362,7 +362,7 @@ func (q1 *Quat) Mat4() Mat4 {
 
 // Mat3 returns the homogeneous 3D rotation matrix corresponding to the
 // quaternion.
-func (q1 *Quat) Mat3() Mat3 {
+func (q1 *Quaternion) Mat3() Mat3 {
 	w, x, y, z := q1.W, q1.V[0], q1.V[1], q1.V[2]
 	return Mat3{
 		1 - 2*y*y - 2*z*z, 2*x*y + 2*w*z, 2*x*z - 2*w*y,
@@ -372,20 +372,20 @@ func (q1 *Quat) Mat3() Mat3 {
 }
 
 // Dot returns the dot product between two quaternions.
-func (q1 *Quat) Dot(q2 *Quat) float32 {
+func (q1 *Quaternion) Dot(q2 *Quaternion) float32 {
 	return q1.W*q2.W + q1.V[0]*q2.V[0] + q1.V[1]*q2.V[1] + q1.V[2]*q2.V[2]
 }
 
 // Equal returns whether the quaternions are approximately equal, as if
 // FloatEqual was called on each matching element.
-func (q1 *Quat) Equal(q2 *Quat) bool {
+func (q1 *Quaternion) Equal(q2 *Quaternion) bool {
 	return FloatEqual(q1.W, q2.W) && q1.V.Equal(&q2.V)
 }
 
 // EqualThreshold returns whether the quaternions are approximately equal
 // with a given tolerance, as if FloatEqualThreshold was called on each matching
 // element with the given epsilon.
-func (q1 *Quat) EqualThreshold(q2 *Quat, epsilon float32) bool {
+func (q1 *Quaternion) EqualThreshold(q2 *Quaternion, epsilon float32) bool {
 	return FloatEqualThreshold(q1.W, q2.W, epsilon) && q1.V.EqualThreshold(&q2.V, epsilon)
 }
 
@@ -395,13 +395,13 @@ func (q1 *Quat) EqualThreshold(q2 *Quat, epsilon float32) bool {
 // Different values can represent the same orientation (q == -q) because
 // quaternions avoid singularities and discontinuities involved with rotation in
 // 3 dimensions by adding extra dimensions.
-func (q1 *Quat) OrientationEqual(q2 *Quat) bool {
+func (q1 *Quaternion) OrientationEqual(q2 *Quaternion) bool {
 	return q1.OrientationEqualThreshold(q2, Epsilon)
 }
 
 // OrientationEqualThreshold returns whether the quaternions represents the same
 // orientation with a given tolerance.
-func (q1 *Quat) OrientationEqualThreshold(q2 *Quat, epsilon float32) bool {
+func (q1 *Quaternion) OrientationEqualThreshold(q2 *Quaternion, epsilon float32) bool {
 	n1 := q1.Normalized()
 	n2 := q2.Normalized()
 	return Abs(n1.Dot(&n2)) > 1-epsilon
@@ -413,7 +413,7 @@ func (q1 *Quat) OrientationEqualThreshold(q2 *Quat, epsilon float32) bool {
 //
 // However, it's expensive and QuatSlerp(q1,q2) is not the same as
 // QuatSlerp(q2,q1)
-func QuatSlerp(q1, q2 *Quat, amount float32) Quat {
+func QuatSlerp(q1, q2 *Quaternion, amount float32) Quaternion {
 	const epsilon = 0.9995
 	n1, n2 := q1.Normalized(), q2.Normalized()
 	dot := n1.Dot(&n2)
@@ -439,7 +439,7 @@ func QuatSlerp(q1, q2 *Quat, amount float32) Quat {
 }
 
 // QuatLerp is *L*inear Int*erp*olation between two Quaternions.
-func QuatLerp(q1, q2 *Quat, amount float32) Quat {
+func QuatLerp(q1, q2 *Quaternion, amount float32) Quaternion {
 	//q1.Add(                        )
 	//       q2.Sub(  )
 	//              q1 .Scale(amount)
@@ -456,7 +456,7 @@ func QuatLerp(q1, q2 *Quat, amount float32) Quat {
 // Nlerp(q1,q2) and Nlerp(q2,q1) return the same path. You should probably use
 // this more often unless you're suffering from choppiness due to the
 // non-constant velocity problem.
-func QuatNlerp(q1, q2 *Quat, amount float32) Quat {
+func QuatNlerp(q1, q2 *Quaternion, amount float32) Quaternion {
 	l := QuatLerp(q1, q2, amount)
 	return l.Normalized()
 }
@@ -467,7 +467,7 @@ func QuatNlerp(q1, q2 *Quat, amount float32) Quat {
 // The rotation "order" is more of an axis descriptor. For instance XZX would
 // tell the function to interpret angle1 as a rotation about the X axis, angle2
 // about the Z axis, and angle3 about the X axis again.
-func AnglesToQuat(angle1, angle2, angle3 float32, order RotationOrder) Quat {
+func AnglesToQuat(angle1, angle2, angle3 float32, order RotationOrder) Quaternion {
 	// Based off the code for the Matlab function "angle2quat", though this
 	// implementation only supports 3 single angles as opposed to multiple
 	// angles.
@@ -478,7 +478,7 @@ func AnglesToQuat(angle1, angle2, angle3 float32, order RotationOrder) Quat {
 	s[1], c[1] = Sincos(angle2 / 2)
 	s[2], c[2] = Sincos(angle3 / 2)
 
-	var ret Quat
+	var ret Quaternion
 	switch order {
 	case ZYX:
 		ret.W = c[0]*c[1]*c[2] + s[0]*s[1]*s[2]
@@ -559,12 +559,12 @@ func AnglesToQuat(angle1, angle2, angle3 float32, order RotationOrder) Quat {
 }
 
 // Mat4ToQuat converts a pure rotation matrix into a quaternion
-func Mat4ToQuat(m *Mat4) Quat {
+func Mat4ToQuat(m *Mat4) Quaternion {
 	// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
 
 	if tr := m[0] + m[5] + m[10]; tr > 0 {
 		s := 0.5 / Sqrt(tr+1.0)
-		return Quat{
+		return Quaternion{
 			0.25 / s,
 			Vec3{
 				(m[6] - m[9]) * s,
@@ -576,7 +576,7 @@ func Mat4ToQuat(m *Mat4) Quat {
 
 	if (m[0] > m[5]) && (m[0] > m[10]) {
 		s := 2.0 * Sqrt(1.0+m[0]-m[5]-m[10])
-		return Quat{
+		return Quaternion{
 			(m[6] - m[9]) / s,
 			Vec3{
 				0.25 * s,
@@ -588,7 +588,7 @@ func Mat4ToQuat(m *Mat4) Quat {
 
 	if m[5] > m[10] {
 		s := 2.0 * Sqrt(1.0+m[5]-m[0]-m[10])
-		return Quat{
+		return Quaternion{
 			(m[8] - m[2]) / s,
 			Vec3{
 				(m[4] + m[1]) / s,
@@ -600,7 +600,7 @@ func Mat4ToQuat(m *Mat4) Quat {
 	}
 
 	s := 2.0 * Sqrt(1.0+m[10]-m[0]-m[5])
-	return Quat{
+	return Quaternion{
 		(m[1] - m[4]) / s,
 		Vec3{
 			(m[8] + m[2]) / s,
@@ -613,7 +613,7 @@ func Mat4ToQuat(m *Mat4) Quat {
 // QuatLookAtV creates a rotation from an eye vector to a center vector
 //
 // It assumes the front of the rotated object at Z- and up at Y+
-func QuatLookAtV(eye, center, up *Vec3) Quat {
+func QuatLookAtV(eye, center, up *Vec3) Quaternion {
 	// http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/#I_need_an_equivalent_of_gluLookAt__How_do_I_orient_an_object_towards_a_point__
 	// https://bitbucket.org/sinbad/ogre/src/d2ef494c4a2f5d6e2f0f17d3bfb9fd936d5423bb/OgreMain/src/OgreCamera.cpp?at=default#cl-161
 
@@ -642,7 +642,7 @@ func QuatLookAtV(eye, center, up *Vec3) Quat {
 }
 
 // QuatBetweenVectors calculates the rotation between two vectors
-func QuatBetweenVectors(start, dest *Vec3) Quat {
+func QuatBetweenVectors(start, dest *Vec3) Quaternion {
 	const epsilon = 0.001
 	// http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/#I_need_an_equivalent_of_gluLookAt__How_do_I_orient_an_object_towards_a_point__
 	// https://github.com/g-truc/glm/blob/0.9.5/glm/gtx/quaternion.inl#L225
@@ -671,7 +671,7 @@ func QuatBetweenVectors(start, dest *Vec3) Quat {
 	axis := sn.Cross(&dn)
 	s := Sqrt((1.0 + cosTheta) * 2.0)
 
-	return Quat{
+	return Quaternion{
 		s * 0.5,
 		axis.Mul(1.0 / s),
 	}
