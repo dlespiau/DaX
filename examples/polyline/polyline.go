@@ -9,8 +9,8 @@ var window *dax.Window
 type Scene struct {
 	dax.Scene
 
-	poly             *dax.Polyline
-	left_button_down bool
+	poly           *dax.Polyline
+	leftButtonDown bool
 }
 
 func (s *Scene) Setup() {
@@ -19,7 +19,7 @@ func (s *Scene) Setup() {
 }
 
 func (s *Scene) OnMouseMoved(x, y float32) {
-	if s.left_button_down {
+	if s.leftButtonDown {
 		s.poly.Add(x, y, 0)
 	}
 }
@@ -27,7 +27,7 @@ func (s *Scene) OnMouseMoved(x, y float32) {
 func (s *Scene) OnMouseButtonPressed(b dax.MouseButton, x, y float32) {
 	switch b {
 	case dax.MouseButtonLeft:
-		s.left_button_down = true
+		s.leftButtonDown = true
 		s.poly.Add(x, y, 0)
 	case dax.MouseButtonRight:
 		s.poly.Clear()
@@ -37,7 +37,7 @@ func (s *Scene) OnMouseButtonPressed(b dax.MouseButton, x, y float32) {
 func (s *Scene) OnMouseButtonReleased(b dax.MouseButton, x, y float32) {
 	switch b {
 	case dax.MouseButtonLeft:
-		s.left_button_down = false
+		s.leftButtonDown = false
 	}
 }
 
