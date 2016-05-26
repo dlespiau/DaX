@@ -20,20 +20,27 @@ func init() {
 	}
 }
 
-type Application struct {
-	name string
+type application struct {
+	Name string
 
 	windows map[*glfw.Window]*Window
 }
 
-var _app *Application
+func NewApplication(name string) *application {
+	app := new(application)
+	app.Name = name
+	app.windows = make(map[*glfw.Window]*Window)
+	return app
+}
 
-func (app *Application) addWindow(window *Window) {
+var _app *application
+
+func (app *application) addWindow(window *Window) {
 	// TODO: support multiple windows
 	app.windows[window.glfwWindow] = window
 }
 
-func (app *Application) Run() {
+func (app *application) Run() {
 	for _, window := range app.windows {
 		for !window.glfwWindow.ShouldClose() {
 			window.Update()
@@ -44,7 +51,7 @@ func (app *Application) Run() {
 	}
 }
 
-func (app *Application) CreateWindow(name string, width, height int) *Window {
+func (app *application) CreateWindow(name string, width, height int) *Window {
 	_app = app
 
 	window := newWindow(app, name, width, height)

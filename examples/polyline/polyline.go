@@ -54,9 +54,9 @@ func (s *Scene) Draw(fb dax.Framebuffer) {
 }
 
 func main() {
-	var app dax.Application
+	app := dax.NewApplication("Polyline Example")
 
-	window = app.CreateWindow("Polyline Example", 800, 600)
+	window := app.CreateWindow(app.Name, 800, 600)
 	window.SetScene(&Scene{})
 
 	app.Run()

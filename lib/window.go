@@ -11,7 +11,7 @@ import (
 )
 
 type Window struct {
-	app           *Application
+	app           *application
 	name          string
 	width, height int
 	fb            Framebuffer
@@ -19,7 +19,7 @@ type Window struct {
 	glfwWindow    *glfw.Window
 }
 
-func newWindow(app *Application, name string, width, height int) *Window {
+func newWindow(app *application, name string, width, height int) *Window {
 	window := new(Window)
 	window.app = app
 	window.name = name

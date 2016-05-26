@@ -26,9 +26,9 @@ func (s *Scene) OnRuneEntered(r rune) {
 }
 
 func main() {
-	var app dax.Application
+	app := dax.NewApplication("Events Example")
 
-	window := app.CreateWindow("Events Example", 800, 600)
+	window := app.CreateWindow(app.Name, 800, 600)
 	window.SetScene(&Scene{})
 
 	app.Run()
