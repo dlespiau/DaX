@@ -3,8 +3,6 @@ package dax
 import (
 	"fmt"
 	"reflect"
-
-	m "github.com/dlespiau/dax/math"
 )
 
 type Scener interface {
@@ -29,6 +27,7 @@ type Scener interface {
 }
 
 type Scene struct {
+	camera          Camera
 	name            string
 	backgroundColor Color
 }
@@ -69,6 +68,10 @@ func (s *Scene) SetBackgroundColor(r, g, b, a float32) {
 	s.backgroundColor.A = a
 }
 
+func (s *Scene) SetCamera(camera Camera) {
+	s.camera = camera
+}
+
 func (s *Scene) Update() {
 }
 
@@ -79,8 +82,15 @@ func (s *Scene) OnResize(fb Framebuffer, width, height int) {
 	fb.SetSize(width, height)
 	fb.SetViewport(0, 0, width, height)
 
-	projection := m.Ortho(0, float32(width), float32(height), 0, -1, 1)
-	fb.SetProjection(&projection)
+	var camera Camera
+	if s.camera != nil {
+		camera = s.camera
+	} else {
+		camera = newOrthographicCamera(0, float32(width),
+			float32(height), 0, -1, 1)
+	}
+	projection := camera.GetProjection()
+	fb.SetProjection(projection)
 }
 
 func (s *Scene) OnKeyPressed() {
