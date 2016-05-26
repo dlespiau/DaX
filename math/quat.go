@@ -43,7 +43,8 @@ func QuatIdent() Quaternion {
 	return Quaternion{1, Vec3{0, 0, 0}}
 }
 
-// QuatRotate creates an angle from an axis and an angle relative to that axis.
+// QuatRotate creates a quaternion from an axis and an angle relative to that
+// axis.
 //
 // This is cheaper than HomogRotate3D.
 func QuatRotate(angle float32, axis *Vec3) Quaternion {
