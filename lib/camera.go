@@ -27,3 +27,14 @@ func NewOrthographicCamera(left, right, bottom, top, near, far float32) Camera {
 	camera.projection = math.Ortho(left, right, bottom, top, near, far)
 	return camera
 }
+
+type perspectiveCamera struct {
+	BaseCamera
+}
+
+func NewPerspectiveCamera(fovy, aspect, near, far float32) Camera {
+	camera := new(perspectiveCamera)
+
+	camera.projection = math.Perspective(fovy, aspect, near, far)
+	return camera
+}
