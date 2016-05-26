@@ -86,7 +86,7 @@ func (s *Scene) OnResize(fb Framebuffer, width, height int) {
 	if s.camera != nil {
 		camera = s.camera
 	} else {
-		camera = newOrthographicCamera(0, float32(width),
+		camera = NewOrthographicCamera(0, float32(width),
 			float32(height), 0, -1, 1)
 	}
 	projection := camera.GetProjection()

@@ -17,12 +17,12 @@ func (camera *BaseCamera) GetProjection() *math.Mat4 {
 	return &camera.projection
 }
 
-type OrthographicCamera struct {
+type orthographicCamera struct {
 	BaseCamera
 }
 
-func newOrthographicCamera(left, right, bottom, top, near, far float32) Camera {
-	camera := new(OrthographicCamera)
+func NewOrthographicCamera(left, right, bottom, top, near, far float32) Camera {
+	camera := new(orthographicCamera)
 
 	camera.projection = math.Ortho(left, right, bottom, top, near, far)
 	return camera
