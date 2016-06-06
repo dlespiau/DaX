@@ -32,6 +32,30 @@ func NewOrthographicCamera(left, right, bottom, top, near, far float32) *orthogr
 func (c *orthographicCamera) UpdateFBSize(width, height int) {
 }
 
+type screenSpaceCamera struct {
+	BaseCamera
+	near, far float32
+}
+
+func (c *screenSpaceCamera) updateProjection(width, height int) {
+	c.projection = math.Ortho(0, float32(width), float32(height), 0,
+		c.near, c.far)
+}
+
+func NewScreenSpaceCamera(width, height int, near, far float32) *screenSpaceCamera {
+	c := new(screenSpaceCamera)
+
+	c.near = near
+	c.far = far
+	c.updateProjection(width, height)
+
+	return c
+}
+
+func (c *screenSpaceCamera) UpdateFBSize(width, height int) {
+	c.updateProjection(width, height)
+}
+
 type perspectiveCamera struct {
 	BaseCamera
 	fovy, aspect, near, far float32
