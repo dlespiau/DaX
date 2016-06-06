@@ -5,6 +5,7 @@ import (
 )
 
 type Camera interface {
+	UpdateFBSize(width, height int)
 	GetProjection() *math.Mat4
 }
 
@@ -28,13 +29,31 @@ func NewOrthographicCamera(left, right, bottom, top, near, far float32) *orthogr
 	return camera
 }
 
+func (c *orthographicCamera) UpdateFBSize(width, height int) {
+}
+
 type perspectiveCamera struct {
 	BaseCamera
+	fovy, aspect, near, far float32
+}
+
+func (c *perspectiveCamera) updateProjection() {
+	c.projection = math.Perspective(c.fovy, c.aspect, c.near, c.far)
 }
 
 func NewPerspectiveCamera(fovy, aspect, near, far float32) *perspectiveCamera {
-	camera := new(perspectiveCamera)
+	c := new(perspectiveCamera)
+	c.fovy = fovy
+	c.aspect = aspect
+	c.near = near
+	c.far = far
 
-	camera.projection = math.Perspective(fovy, aspect, near, far)
-	return camera
+	c.updateProjection()
+
+	return c
+}
+
+func (c *perspectiveCamera) UpdateFBSize(width, height int) {
+	c.aspect = float32(width) / float32(height)
+	c.updateProjection()
 }
