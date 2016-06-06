@@ -35,7 +35,16 @@ type Scene struct {
 func (s *Scene) Setup() {
 }
 
-func sceneSetup(s Scener) {
+func toScene(s Scener) *Scene {
+	if scene, ok := s.(*Scene); ok {
+		return scene
+	}
+
+	v := reflect.ValueOf(s).Elem().FieldByName("Scene")
+	return v.Addr().Interface().(*Scene)
+}
+
+func sceneSetup(s Scener, fb Framebuffer) {
 	v := reflect.ValueOf(s).Elem()
 	t := v.Type()
 	for i := 0; i < t.NumField(); i++ {
@@ -51,7 +60,16 @@ func sceneSetup(s Scener) {
 		}
 
 	}
+
 	s.Setup()
+
+	if scene := toScene(s); scene != nil && scene.camera == nil {
+		// If we don't have a camera by that point, we default to an
+		// orthographic one placing (0, 0) at the top left corner and
+		// making (width - 1, height - 1) the bottom right corner
+		width, height := fb.Size()
+		scene.camera = NewScreenSpaceCamera(width, height, -1, 1)
+	}
 }
 
 func (s *Scene) TearDown() {
@@ -69,6 +87,10 @@ func (s *Scene) SetBackgroundColor(r, g, b, a float32) {
 }
 
 func (s *Scene) SetCamera(camera Camera) {
+	if camera == nil {
+		return
+	}
+
 	s.camera = camera
 }
 
@@ -82,14 +104,8 @@ func (s *Scene) OnResize(fb Framebuffer, width, height int) {
 	fb.SetSize(width, height)
 	fb.SetViewport(0, 0, width, height)
 
-	var camera Camera
-	if s.camera != nil {
-		camera = s.camera
-	} else {
-		camera = NewOrthographicCamera(0, float32(width),
-			float32(height), 0, -1, 1)
-	}
-	projection := camera.GetProjection()
+	s.camera.UpdateFBSize(width, height)
+	projection := s.camera.GetProjection()
 	fb.SetProjection(projection)
 }
 
