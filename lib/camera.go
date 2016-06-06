@@ -21,7 +21,7 @@ type orthographicCamera struct {
 	BaseCamera
 }
 
-func NewOrthographicCamera(left, right, bottom, top, near, far float32) Camera {
+func NewOrthographicCamera(left, right, bottom, top, near, far float32) *orthographicCamera {
 	camera := new(orthographicCamera)
 
 	camera.projection = math.Ortho(left, right, bottom, top, near, far)
@@ -32,7 +32,7 @@ type perspectiveCamera struct {
 	BaseCamera
 }
 
-func NewPerspectiveCamera(fovy, aspect, near, far float32) Camera {
+func NewPerspectiveCamera(fovy, aspect, near, far float32) *perspectiveCamera {
 	camera := new(perspectiveCamera)
 
 	camera.projection = math.Perspective(fovy, aspect, near, far)
