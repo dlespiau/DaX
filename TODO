@@ -36,6 +36,7 @@
 - Multi windows support (destroy support, share same context, example!)
 - Text support
 - Stats support (FPS, number of drall calls?)
+- Store the viewport in the camera object
 
 = Geometry
 
