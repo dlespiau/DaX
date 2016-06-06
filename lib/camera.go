@@ -14,8 +14,8 @@ type BaseCamera struct {
 	projection math.Mat4
 }
 
-func (camera *BaseCamera) GetProjection() *math.Mat4 {
-	return &camera.projection
+func (c *BaseCamera) GetProjection() *math.Mat4 {
+	return &c.projection
 }
 
 type orthographicCamera struct {
@@ -23,10 +23,10 @@ type orthographicCamera struct {
 }
 
 func NewOrthographicCamera(left, right, bottom, top, near, far float32) *orthographicCamera {
-	camera := new(orthographicCamera)
+	c := new(orthographicCamera)
 
-	camera.projection = math.Ortho(left, right, bottom, top, near, far)
-	return camera
+	c.projection = math.Ortho(left, right, bottom, top, near, far)
+	return c
 }
 
 func (c *orthographicCamera) UpdateFBSize(width, height int) {
