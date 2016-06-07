@@ -8,14 +8,32 @@
 - Points from model + some kind of animation
     http://threejs.org/examples/#webgl_points_dynamic
 - http://threejs.org/examples/#webgl_custom_attributes_points2
-- Voronoi cells with color taken from an image
+- Texture Generation
+  • Voronoi cells with color taken from an image
     http://iquilezles.org/www/articles/cellularffx/cellularffx.htm
+  • http://conspiracy.hu/articles/1/
+- Fractals
+  • https://en.wikipedia.org/wiki/Fractal
+  • Strange attractors:
+    https://en.wikipedia.org/wiki/Attractor#Strange_attractor
+- Choatic behaviours
 
-= Demos
+= Inspiration
 
 - ASD: http://www.asd.gr/
   http://www.iquilezles.org/www/material/icm2006/kostas_slides.pdf
 - Satori: http://zd3n.com/
+- Terrain generation:
+    https://www.youtube.com/watch?v=_YWMGuh15nE
+    https://files.scene.org/view/resources/code/sources/rgba_tbc_elevated_source.zip
+    http://www.iquilezles.org/www/articles/morenoise/morenoise.htm
+- Various demo sources:
+    http://www.displayhack.org/2012/the-great-demoscene-sourcecode-giveaway/
+- Farbrausch:
+    https://www.youtube.com/watch?v=sbQhgEJuExY
+- Conspiracy:
+    http://conspiracy.hu/
+    Chaos Theory: https://www.youtube.com/watch?v=ZfuierUvx1A
 
 == Core
 
