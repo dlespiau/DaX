@@ -12,6 +12,12 @@ type Node struct {
 	Scale    math.Vec3
 }
 
+func NewNode() *Node {
+	n := new(Node)
+	n.Init()
+	return n
+}
+
 func (n *Node) Init() {
 	n.Rotation.Iden()
 	n.Scale = math.Vec3{1, 1, 1}
