@@ -75,5 +75,6 @@ func (n *Node) ScaleZ(sz float32) {
 }
 
 func (n *Node) AddChild(child *Node) {
+	child.Parent = n
 	n.Children = append(n.Children, child)
 }
