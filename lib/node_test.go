@@ -7,10 +7,13 @@ import (
 )
 
 func TestAddChild(t *testing.T) {
-	var p, c Node
+	p := NewNode()
+	c := NewNode()
 
-	p.AddChild(&c)
-	assert.Equal(t, c.Parent, &p)
-	assert.Equal(t, len(p.Children), 1)
-	assert.Equal(t, p.Children[0], &c)
+	p.AddChild(c)
+	assert.Equal(t, c.GetParent(), p)
+
+	children := p.GetChildren()
+	assert.Equal(t, len(children), 1)
+	assert.Equal(t, children[0], c)
 }

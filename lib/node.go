@@ -5,8 +5,10 @@ import (
 )
 
 type Node struct {
-	Parent   *Node
-	Children []*Node
+	// Grapher
+	parent   Grapher
+	children []Grapher
+
 	Position math.Vec3
 	Rotation math.Quaternion
 	Scale    math.Vec3
@@ -80,7 +82,21 @@ func (n *Node) ScaleZ(sz float32) {
 	n.Scale[2] *= sz
 }
 
-func (n *Node) AddChild(child *Node) {
-	child.Parent = n
-	n.Children = append(n.Children, child)
+// Grapher implementation
+
+func (n *Node) GetParent() Grapher {
+	return n.parent
+}
+
+func (n *Node) SetParent(parent Grapher) {
+	n.parent = parent
+}
+
+func (n *Node) AddChild(child Grapher) {
+	child.SetParent(n)
+	n.children = append(n.children, child)
+}
+
+func (n *Node) GetChildren() []Grapher {
+	return n.children
 }

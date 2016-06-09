@@ -153,3 +153,7 @@ func (r *renderer) drawPolyline(fb Framebuffer, p *Polyline) {
 
 	gl.DrawArrays(gl.LINE_STRIP, 0, int32(p.Size()))
 }
+
+func (r *renderer) drawSceneGraph(fb Framebuffer, sg *SceneGraph) {
+
+}
