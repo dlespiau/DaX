@@ -17,6 +17,8 @@
   • Strange attractors:
     https://en.wikipedia.org/wiki/Attractor#Strange_attractor
 - Choatic behaviours
+- Topological Mesh Modelling (TopMod):
+  http://www.viz.tamu.edu/faculty/ergun/index.html
 
 = Inspiration
 
@@ -55,11 +57,6 @@
 - Text support
 - Stats support (FPS, number of drall calls?)
 - Store the viewport in the camera object
-
-= Geometry
-
-- Topological Mesh Modelling (TopMod):
-  http://www.viz.tamu.edu/faculty/ergun/index.html
 
 == Scene
 
