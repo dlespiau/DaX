@@ -137,7 +137,7 @@ func (r *renderer) drawPolyline(fb Framebuffer, p *Polyline) {
 
 	mesh := NewMesh()
 	defer mesh.Destroy()
-	mesh.SetAttribute(AttributePosition, p.vertices)
+	mesh.AddAttribute("position", p.vertices, 3)
 	mesh.Bind()
 
 	gl.UseProgram(r.program)
