@@ -97,6 +97,27 @@ func (v1 *Vec4) Vec3() Vec3 {
 	return Vec3{v1[0], v1[1], v1[2]}
 }
 
+// Set assigns the components of a Vec2 in one go.
+func (v1 Vec2) Set(x, y float32) {
+	v1[0] = x
+	v1[1] = y
+}
+
+// Set assigns the components of a Vec3 in one go.
+func (v1 *Vec3) Set(x, y, z float32) {
+	v1[0] = x
+	v1[1] = y
+	v1[2] = z
+}
+
+// Set assigns the components of a Vec4 in one go.
+func (v1 *Vec4) Set(x, y, z, w float32) {
+	v1[0] = x
+	v1[1] = y
+	v1[2] = z
+	v1[3] = w
+}
+
 // Elem extracts the elements of the vector for direct value assignment.
 func (v1 Vec2) Elem() (x, y float32) {
 	return v1[0], v1[1]
