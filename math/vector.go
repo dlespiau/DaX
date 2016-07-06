@@ -98,7 +98,7 @@ func (v1 *Vec4) Vec3() Vec3 {
 }
 
 // Set assigns the components of a Vec2 in one go.
-func (v1 Vec2) Set(x, y float32) {
+func (v1 *Vec2) Set(x, y float32) {
 	v1[0] = x
 	v1[1] = y
 }
