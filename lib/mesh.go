@@ -1,6 +1,8 @@
 package dax
 
 import (
+	"unsafe"
+
 	"github.com/go-gl/gl/v3.3-core/gl"
 )
 
@@ -88,6 +90,56 @@ func (ab *AttributeBuffer) Upload() {
 	gl.BufferData(gl.ARRAY_BUFFER, len(ab.data)*4, gl.Ptr(ab.data), gl.STATIC_DRAW)
 }
 
+type IndexBuffer struct {
+	data16 []uint16
+	data32 []uint32
+	vbo    uint32
+}
+
+func (ib *IndexBuffer) Init(size int) {
+	if size > 65536 {
+		ib.data32 = make([]uint32, size, size)
+	} else {
+		ib.data16 = make([]uint16, size, size)
+	}
+	gl.GenBuffers(1, &ib.vbo)
+}
+
+func (ib *IndexBuffer) InitFromData(data []uint) {
+	ib.Init(len(data))
+	for i, v := range data {
+		ib.Set(i, v)
+	}
+}
+
+func (ib *IndexBuffer) Destroy() {
+	gl.DeleteBuffers(1, &ib.vbo)
+}
+
+func (ib *IndexBuffer) Set(nth int, index uint) {
+	if ib.data16 != nil {
+		ib.data16[nth] = uint16(index)
+	} else {
+		ib.data32[nth] = uint32(index)
+	}
+}
+
+func (ib *IndexBuffer) Upload() {
+	var size int
+	var ptr unsafe.Pointer
+
+	if ib.data16 != nil {
+		size = len(ib.data16) * 2
+		ptr = gl.Ptr(ib.data16)
+	} else {
+		size = len(ib.data32) * 4
+		ptr = gl.Ptr(ib.data32)
+	}
+
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib.vbo)
+	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, size, ptr, gl.STATIC_DRAW)
+}
+
 const (
 	has_position = 1 << iota
 	has_color
@@ -97,6 +149,7 @@ type mesh struct {
 	flags      uint32
 	vao        uint32
 	attributes []AttributeBuffer
+	indices    IndexBuffer
 }
 
 func NewMesh() *mesh {
@@ -111,6 +164,7 @@ func (m *mesh) Destroy() {
 	for _, ab := range m.attributes {
 		ab.Destroy()
 	}
+	m.indices.Destroy()
 	gl.DeleteVertexArrays(1, &m.vao)
 }
 
@@ -153,6 +207,18 @@ func (m *mesh) AddAttributeBuffer(buffer *AttributeBuffer) {
 	*ab = *buffer
 	ab.Upload()
 }
+
+func (m *mesh) HasIndices() bool {
+	return m.indices.data16 != nil || m.indices.data32 != nil
+}
+
+func (m *mesh) AddIndices(data []uint) {
+	m.Bind()
+
+	m.indices.InitFromData(data)
+	m.indices.Upload()
+}
+
 func (m *mesh) Bind() {
 	gl.BindVertexArray(m.vao)
 }
