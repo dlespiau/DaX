@@ -124,9 +124,7 @@ func (m *mesh) getAttribute(name string) *AttributeBuffer {
 	return nil
 }
 
-func (m *mesh) AddAttribute(name string, data []float32, nComponents int) {
-	m.Bind()
-
+func (m *mesh) getNewAttribute(name string) *AttributeBuffer {
 	ab := m.getAttribute(name)
 	if ab != nil {
 		ab.Destroy()
@@ -137,10 +135,24 @@ func (m *mesh) AddAttribute(name string, data []float32, nComponents int) {
 		ab = &m.attributes[len(m.attributes)-1]
 	}
 
+	return ab
+}
+
+func (m *mesh) AddAttribute(name string, data []float32, nComponents int) {
+	m.Bind()
+
+	ab := m.getNewAttribute(name)
 	ab.InitFromData(name, data, nComponents)
 	ab.Upload()
 }
 
+func (m *mesh) AddAttributeBuffer(buffer *AttributeBuffer) {
+	m.Bind()
+
+	ab := m.getNewAttribute(buffer.name)
+	*ab = *buffer
+	ab.Upload()
+}
 func (m *mesh) Bind() {
 	gl.BindVertexArray(m.vao)
 }
