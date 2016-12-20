@@ -3048,7 +3048,7 @@ func BenchmarkSqrt(b *testing.B) {
 
 func BenchmarkSqrt64(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		math.Sqrt(10)
+		_ = math.Sqrt(10.0)
 	}
 }
 
