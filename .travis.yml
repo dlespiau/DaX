@@ -7,4 +7,6 @@ addons:
         - libgl1-mesa-dev
         - xorg-dev
 
-script: ./scripts/test-all.sh
+script:
+    - ./scripts/build-all.sh
+    - ./scripts/test-all.sh
