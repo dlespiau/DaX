@@ -59,6 +59,28 @@ func (t *Transform) Concatenate(t2 *Transform) {
 	((*Mat4)(t)).Mul4With((*Mat4)(t2))
 }
 
+// Scale3f scales this transform by {x, y, z}.
+func (t *Transform) Scale3f(x, y, z float32) {
+	tran := Scale3D(x, y, z)
+	((*Mat4)(t)).Mul4With(&tran)
+}
+
+// ScaleVec3 scales this transform by v.
+func (t *Transform) ScaleVec3(v *Vec3) {
+	tran := Scale3D(v[0], v[1], v[2])
+	((*Mat4)(t)).Mul4With(&tran)
+}
+
+// SetScale3f sets the transform to a scaling operation by {x, y, z}.
+func (t *Transform) SetScale3f(x, y, z float32) {
+	*t = Transform(Scale3D(x, y, z))
+}
+
+// SetScaleVec3 sets the transform to a scaling operation by v.
+func (t *Transform) SetScaleVec3(v *Vec3) {
+	*t = Transform(Scale3D(v[0], v[1], v[2]))
+}
+
 // LocalToWorld transform a given point and returns the world point that this
 // transform generates.
 func (t *Transform) LocalToWorld(v *Vec3) Vec3 {
