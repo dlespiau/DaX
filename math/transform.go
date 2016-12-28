@@ -81,7 +81,7 @@ func (t *Transform) SetScaleVec3(v *Vec3) {
 	*t = Transform(Scale3D(v[0], v[1], v[2]))
 }
 
-// LocalToWorld transform a given point and returns the world point that this
+// LocalToWorld transforms a given point and returns the world point that this
 // transform generates.
 func (t *Transform) LocalToWorld(v *Vec3) Vec3 {
 	v4 := v.Vec4(1)
