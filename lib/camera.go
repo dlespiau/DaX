@@ -18,6 +18,13 @@ func (c *BaseCamera) GetProjection() *math.Mat4 {
 	return &c.projection
 }
 
+var up = &math.Vec3{0, 1, 0}
+
+// LookAt rotates the camera to look at the target
+func (c *BaseCamera) LookAt(target *math.Vec3) {
+	c.rotation = math.QuatLookAtV(&c.position, target, up)
+}
+
 type orthographicCamera struct {
 	BaseCamera
 }
