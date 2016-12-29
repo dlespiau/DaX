@@ -80,6 +80,31 @@ func TestScale(t *testing.T) {
 	assertVec3(t, &math.Vec3{2, 2, 2}, n.GetScale(), 1e-6)
 }
 
+func TestTransform(t *testing.T) {
+	n := NewNode()
+
+	n.Translate(1, 0, 0)
+	m := n.getTransform()
+	w := m.LocalToWorld(&math.Vec3{0, 0, 0})
+	assertVec3(t, &math.Vec3{1, 0, 0}, &w, 1e-6)
+
+	// scale is done before the translation
+	n.Scale(2, 2, 2)
+	m = n.getTransform()
+	w = m.LocalToWorld(&math.Vec3{1, 0, 0})
+	assertVec3(t, &math.Vec3{3, 0, 0}, &w, 1e-6)
+
+	// rotation is also done before the translation. We manually transform
+	// the vector to cover GetTransform()
+	n.RotateY(-math.Pi / 2)
+	mat := n.GetTransform()
+	local := math.Vec3{1, 0, 0}
+	local4 := local.Vec4(1)
+	w4 := mat.Mul4x1(&local4)
+	w = w4.Vec3()
+	assertVec3(t, &math.Vec3{1, 0, 2}, &w, 1e-6)
+}
+
 func TestAddChild(t *testing.T) {
 	p := NewNode()
 	c := NewNode()
