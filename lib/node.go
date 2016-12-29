@@ -44,6 +44,20 @@ func (n *Node) SetPositionV(position *math.Vec3) {
 	n.transformValid = false
 }
 
+func (n *Node) Translate(tx, ty, tz float32) {
+	n.position[0] += tx
+	n.position[1] += ty
+	n.position[2] += tz
+	n.transformValid = false
+}
+
+func (n *Node) TranslateV(t *math.Vec3) {
+	n.position[0] += t[0]
+	n.position[1] += t[1]
+	n.position[2] += t[2]
+	n.transformValid = false
+}
+
 func (n *Node) TranslateX(tx float32) {
 	n.position[0] += tx
 	n.transformValid = false
@@ -102,6 +116,20 @@ func (n *Node) SetScale(sx, sy, sz float32) {
 
 func (n *Node) SetScaleV(s *math.Vec3) {
 	n.scale = *s
+	n.transformValid = false
+}
+
+func (n *Node) Scale(sx, sy, sz float32) {
+	n.scale[0] *= sx
+	n.scale[1] *= sy
+	n.scale[2] *= sz
+	n.transformValid = false
+}
+
+func (n *Node) ScaleV(s *math.Vec3) {
+	n.scale[0] *= s[0]
+	n.scale[1] *= s[1]
+	n.scale[2] *= s[2]
 	n.transformValid = false
 }
 

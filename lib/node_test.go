@@ -31,6 +31,12 @@ func TestTranslate(t *testing.T) {
 
 	n.TranslateZ(21)
 	assertVec3(t, &math.Vec3{10, 14, 21}, n.GetPosition(), 1e-6)
+
+	n.Translate(1, 2, 3)
+	assertVec3(t, &math.Vec3{11, 16, 24}, n.GetPosition(), 1e-6)
+
+	n.TranslateV(&math.Vec3{-1, -1, -1})
+	assertVec3(t, &math.Vec3{10, 15, 23}, n.GetPosition(), 1e-6)
 }
 
 func TestRotation(t *testing.T) {
@@ -77,6 +83,12 @@ func TestScale(t *testing.T) {
 	assertVec3(t, &math.Vec3{2, 2, 1}, n.GetScale(), 1e-6)
 
 	n.ScaleZ(2)
+	assertVec3(t, &math.Vec3{2, 2, 2}, n.GetScale(), 1e-6)
+
+	n.Scale(1/2., 1/2., 1/2.)
+	assertVec3(t, &math.Vec3{1, 1, 1}, n.GetScale(), 1e-6)
+
+	n.ScaleV(&math.Vec3{2, 2, 2})
 	assertVec3(t, &math.Vec3{2, 2, 2}, n.GetScale(), 1e-6)
 }
 
