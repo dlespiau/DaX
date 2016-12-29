@@ -115,6 +115,11 @@ func TestTransform(t *testing.T) {
 	w4 := mat.Mul4x1(&local4)
 	w = w4.Vec3()
 	assertVec3(t, &math.Vec3{1, 0, 2}, &w, 1e-6)
+
+	// Hit the "fast" path returning the cached matrix
+	m = n.getTransform()
+	w = m.LocalToWorld(&math.Vec3{1, 0, 0})
+	assertVec3(t, &math.Vec3{1, 0, 2}, &w, 1e-6)
 }
 
 func TestAddChild(t *testing.T) {
