@@ -45,6 +45,14 @@ func (sg *SceneGraph) Init() {
 	sg.Node.Init()
 }
 
+func (sg *SceneGraph) updateWorldTransform() {
+	sg.Node.updateWorldTransform(false)
+}
+
+func (sg *SceneGraph) Update(time float64) {
+	sg.updateWorldTransform()
+}
+
 // Depth-first pre-order traversal of the SceneGraph
 func (sg *SceneGraph) Traverse() <-chan Grapher {
 	ch := make(chan Grapher)

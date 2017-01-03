@@ -133,3 +133,28 @@ func TestAddChild(t *testing.T) {
 	assert.Equal(t, len(children), 1)
 	assert.Equal(t, children[0], c)
 }
+
+func TestWorldTransform(t *testing.T) {
+	n := NewNode()
+	p := NewNode()
+	q := NewNode()
+
+	n.AddChild(p)
+	p.AddChild(q)
+
+	// O - n - p - q
+	n.Translate(1, 0, 0)
+	p.Translate(1, 0, 0)
+	q.Translate(1, 0, 0)
+
+	n.updateWorldTransform(false)
+	w := q.worldTransform.LocalToWorld(&math.Vec3{0, 0, 0})
+	assertVec3(t, &math.Vec3{3, 0, 0}, &w, 1e-6)
+
+	// O - n - - p - q
+	p.Translate(1, 0, 0)
+
+	n.updateWorldTransform(false)
+	w = q.worldTransform.LocalToWorld(&math.Vec3{0, 0, 0})
+	assertVec3(t, &math.Vec3{4, 0, 0}, &w, 1e-6)
+}

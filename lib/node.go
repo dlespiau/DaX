@@ -9,12 +9,15 @@ type Node struct {
 	parent   Grapher
 	children []Grapher
 
+	transformValid      bool
+	worldTransformValid bool
+
 	position math.Vec3
 	rotation math.Quaternion
 	scale    math.Vec3
 
-	transformValid bool
 	transform      math.Transform
+	worldTransform math.Transform
 }
 
 func NewNode() *Node {
@@ -148,20 +151,59 @@ func (n *Node) ScaleZ(sz float32) {
 	n.transformValid = false
 }
 
-func (n *Node) getTransform() *math.Transform {
+func (n *Node) updateTransform() {
 	if n.transformValid {
-		return &n.transform
+		return
 	}
 
 	n.transform.SetTranslateVec3(&n.position)
 	n.transform.RotateQuat(&n.rotation)
 	n.transform.ScaleVec3(&n.scale)
 	n.transformValid = true
+	n.worldTransformValid = false
+}
+
+func (n *Node) getTransform() *math.Transform {
+	n.updateTransform()
 	return &n.transform
 }
 
 func (n *Node) GetTransform() *math.Mat4 {
-	return (*math.Mat4)(n.getTransform())
+	n.updateTransform()
+	return (*math.Mat4)(&n.transform)
+}
+
+// updateWorldTransform will update the transformation from node space to world
+// space recursively on all nodes.
+// force can be used to force the updates on children when a parent has changed
+// its transform and we, then, need to update the world transform on that
+// subtree.
+func (n *Node) updateWorldTransform(force bool) {
+	// Start by updating the local transform, and, as side effect,
+	// worldTransformValid
+	n.updateTransform()
+
+	if !n.worldTransformValid || force {
+		if n.parent == nil {
+			// this node isn't parented (root or not part of a
+			// scene graph)
+			n.worldTransform = n.transform
+		} else {
+			// compose with parent transform
+			parent := (n.parent).(*Node)
+			world := (*math.Mat4)(&parent.worldTransform)
+			local := (*math.Mat4)(&n.transform)
+
+			(*math.Mat4)(&n.worldTransform).Mul4Of(world, local)
+		}
+
+		force = true
+	}
+
+	for _, child := range n.children {
+		node := child.(*Node)
+		node.updateWorldTransform(force)
+	}
 }
 
 // Grapher implementation
