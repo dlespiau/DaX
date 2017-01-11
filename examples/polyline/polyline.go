@@ -41,7 +41,7 @@ func (s *Scene) OnMouseButtonReleased(b dax.MouseButton, x, y float32) {
 	}
 }
 
-func (s *Scene) Update() {
+func (s *Scene) Update(time float64) {
 	p := s.poly.Positions()
 	for i := 0; i < len(p); i += 3 {
 		p[i] += dax.Rand(-.5, .5)

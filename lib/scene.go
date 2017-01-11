@@ -13,7 +13,7 @@ type Scener interface {
 	// generically clear the framebuffer
 	BackgroundColor() *Color
 
-	Update()
+	Update(time float64)
 	Draw(fb Framebuffer)
 
 	// events
@@ -94,7 +94,11 @@ func (s *Scene) SetCamera(camera Camera) {
 	s.camera = camera
 }
 
-func (s *Scene) Update() {
+func sceneUpdate(s Scener, time float64) {
+	s.Update(time)
+}
+
+func (s *Scene) Update(time float64) {
 }
 
 func (s *Scene) Draw(fb Framebuffer) {

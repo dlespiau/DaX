@@ -62,7 +62,7 @@ func newWindow(app *application, name string, width, height int) *Window {
 }
 
 func (w *Window) Update() {
-	w.scene.Update()
+	sceneUpdate(w.scene, 0)
 }
 
 func (w *Window) Draw() {
