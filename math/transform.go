@@ -116,6 +116,11 @@ func (t *Transform) Mat4() Mat4 {
 	return *((*Mat4)(t))
 }
 
+// Mat4 simply returns a pointer to the Mat4 associated with this Transform.
+func (t *Transform) AsMat4() *Mat4 {
+	return (*Mat4)(t)
+}
+
 // Pointer returns the pointer to the first element of the underlying 4x4
 // matrix. This is can be passed directly to OpenGL function.
 func (t *Transform) Pointer() unsafe.Pointer {
