@@ -145,22 +145,22 @@ const (
 	has_color
 )
 
-type mesh struct {
+type Mesh struct {
 	flags      uint32
 	vao        uint32
 	attributes []AttributeBuffer
 	indices    IndexBuffer
 }
 
-func NewMesh() *mesh {
-	m := new(mesh)
+func NewMesh() *Mesh {
+	m := new(Mesh)
 
 	gl.GenVertexArrays(1, &m.vao)
 
 	return m
 }
 
-func (m *mesh) Destroy() {
+func (m *Mesh) Destroy() {
 	for _, ab := range m.attributes {
 		ab.Destroy()
 	}
@@ -168,7 +168,7 @@ func (m *mesh) Destroy() {
 	gl.DeleteVertexArrays(1, &m.vao)
 }
 
-func (m *mesh) getAttribute(name string) *AttributeBuffer {
+func (m *Mesh) getAttribute(name string) *AttributeBuffer {
 	for _, ab := range m.attributes {
 		if ab.name == name {
 			return &ab
@@ -178,7 +178,7 @@ func (m *mesh) getAttribute(name string) *AttributeBuffer {
 	return nil
 }
 
-func (m *mesh) getNewAttribute(name string) *AttributeBuffer {
+func (m *Mesh) getNewAttribute(name string) *AttributeBuffer {
 	ab := m.getAttribute(name)
 	if ab != nil {
 		ab.Destroy()
@@ -192,7 +192,7 @@ func (m *mesh) getNewAttribute(name string) *AttributeBuffer {
 	return ab
 }
 
-func (m *mesh) AddAttribute(name string, data []float32, nComponents int) {
+func (m *Mesh) AddAttribute(name string, data []float32, nComponents int) {
 	m.Bind()
 
 	ab := m.getNewAttribute(name)
@@ -200,7 +200,7 @@ func (m *mesh) AddAttribute(name string, data []float32, nComponents int) {
 	ab.Upload()
 }
 
-func (m *mesh) AddAttributeBuffer(buffer *AttributeBuffer) {
+func (m *Mesh) AddAttributeBuffer(buffer *AttributeBuffer) {
 	m.Bind()
 
 	ab := m.getNewAttribute(buffer.name)
@@ -208,17 +208,17 @@ func (m *mesh) AddAttributeBuffer(buffer *AttributeBuffer) {
 	ab.Upload()
 }
 
-func (m *mesh) HasIndices() bool {
+func (m *Mesh) HasIndices() bool {
 	return m.indices.data16 != nil || m.indices.data32 != nil
 }
 
-func (m *mesh) AddIndices(data []uint) {
+func (m *Mesh) AddIndices(data []uint) {
 	m.Bind()
 
 	m.indices.InitFromData(data)
 	m.indices.Upload()
 }
 
-func (m *mesh) Bind() {
+func (m *Mesh) Bind() {
 	gl.BindVertexArray(m.vao)
 }

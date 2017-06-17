@@ -34,7 +34,7 @@ func (s *Sphere) Init(radius float32, nVSegments, nHSegments int) {
 	s.InitFull(radius, nVSegments, nHSegments, 0, angle, 0, angle)
 }
 
-func (s *Sphere) GetMesh() *mesh {
+func (s *Sphere) GetMesh() *Mesh {
 	m := NewMesh()
 	var positions, normals, uvs AttributeBuffer
 
