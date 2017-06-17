@@ -7,9 +7,9 @@ import (
 )
 
 type AttributeBuffer struct {
-	name        string
+	Name        string
 	nComponents int
-	data        []float32
+	Data        []float32
 	vbo         uint32
 }
 
@@ -25,9 +25,9 @@ func (ab *AttributeBuffer) Init(name string, size int, nComponents int) {
 }
 
 func (ab *AttributeBuffer) InitFromData(name string, data []float32, nComponents int) {
-	ab.name = name
+	ab.Name = name
 	ab.nComponents = nComponents
-	ab.data = data
+	ab.Data = data
 
 	gl.GenBuffers(1, &ab.vbo)
 }
@@ -37,57 +37,57 @@ func (ab *AttributeBuffer) Destroy() {
 }
 
 func (ab *AttributeBuffer) SetX(index int, x float32) {
-	ab.data[index*ab.nComponents+0] = x
+	ab.Data[index*ab.nComponents+0] = x
 }
 
 func (ab *AttributeBuffer) GetX(index int) (x float32) {
-	x = ab.data[index*ab.nComponents+0]
+	x = ab.Data[index*ab.nComponents+0]
 	return
 }
 
 func (ab *AttributeBuffer) SetXY(index int, x, y float32) {
-	ab.data[index*ab.nComponents+0] = x
-	ab.data[index*ab.nComponents+1] = y
+	ab.Data[index*ab.nComponents+0] = x
+	ab.Data[index*ab.nComponents+1] = y
 }
 
 func (ab *AttributeBuffer) GetXY(index int) (x, y float32) {
-	x = ab.data[index*ab.nComponents+0]
-	y = ab.data[index*ab.nComponents+1]
+	x = ab.Data[index*ab.nComponents+0]
+	y = ab.Data[index*ab.nComponents+1]
 	return
 }
 
 func (ab *AttributeBuffer) SetXYZ(index int, x, y, z float32) {
-	ab.data[index*ab.nComponents+0] = x
-	ab.data[index*ab.nComponents+1] = y
-	ab.data[index*ab.nComponents+2] = z
+	ab.Data[index*ab.nComponents+0] = x
+	ab.Data[index*ab.nComponents+1] = y
+	ab.Data[index*ab.nComponents+2] = z
 }
 
 func (ab *AttributeBuffer) GetXYZ(index int) (x, y, z float32) {
-	x = ab.data[index*ab.nComponents+0]
-	y = ab.data[index*ab.nComponents+1]
-	z = ab.data[index*ab.nComponents+2]
+	x = ab.Data[index*ab.nComponents+0]
+	y = ab.Data[index*ab.nComponents+1]
+	z = ab.Data[index*ab.nComponents+2]
 	return
 }
 
 func (ab *AttributeBuffer) SetXYZW(index int, x, y, z, w float32) {
-	ab.data[index*ab.nComponents+0] = x
-	ab.data[index*ab.nComponents+1] = y
-	ab.data[index*ab.nComponents+2] = z
-	ab.data[index*ab.nComponents+3] = w
+	ab.Data[index*ab.nComponents+0] = x
+	ab.Data[index*ab.nComponents+1] = y
+	ab.Data[index*ab.nComponents+2] = z
+	ab.Data[index*ab.nComponents+3] = w
 
 }
 
 func (ab *AttributeBuffer) GetXYZW(index int) (x, y, z, w float32) {
-	x = ab.data[index*ab.nComponents+0]
-	y = ab.data[index*ab.nComponents+1]
-	z = ab.data[index*ab.nComponents+2]
-	w = ab.data[index*ab.nComponents+3]
+	x = ab.Data[index*ab.nComponents+0]
+	y = ab.Data[index*ab.nComponents+1]
+	z = ab.Data[index*ab.nComponents+2]
+	w = ab.Data[index*ab.nComponents+3]
 	return
 }
 
 func (ab *AttributeBuffer) Upload() {
 	gl.BindBuffer(gl.ARRAY_BUFFER, ab.vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(ab.data)*4, gl.Ptr(ab.data), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(ab.Data)*4, gl.Ptr(ab.Data), gl.STATIC_DRAW)
 }
 
 type IndexBuffer struct {
@@ -168,9 +168,9 @@ func (m *Mesh) Destroy() {
 	gl.DeleteVertexArrays(1, &m.vao)
 }
 
-func (m *Mesh) getAttribute(name string) *AttributeBuffer {
+func (m *Mesh) GetAttribute(name string) *AttributeBuffer {
 	for _, ab := range m.attributes {
-		if ab.name == name {
+		if ab.Name == name {
 			return &ab
 		}
 	}
@@ -179,7 +179,7 @@ func (m *Mesh) getAttribute(name string) *AttributeBuffer {
 }
 
 func (m *Mesh) getNewAttribute(name string) *AttributeBuffer {
-	ab := m.getAttribute(name)
+	ab := m.GetAttribute(name)
 	if ab != nil {
 		ab.Destroy()
 	} else {
@@ -203,7 +203,7 @@ func (m *Mesh) AddAttribute(name string, data []float32, nComponents int) {
 func (m *Mesh) AddAttributeBuffer(buffer *AttributeBuffer) {
 	m.Bind()
 
-	ab := m.getNewAttribute(buffer.name)
+	ab := m.getNewAttribute(buffer.Name)
 	*ab = *buffer
 	ab.Upload()
 }
