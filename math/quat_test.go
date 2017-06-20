@@ -340,7 +340,7 @@ func TestQuatLookAtV(t *testing.T) {
 			&Vec3{0, 0, 0},
 			&Vec3{1, 0, 0},
 			&Vec3{0, 1, 0},
-			&Quaternion{0.7071, Vec3{0, 0.7071, 0}},
+			&Quaternion{0.7071, Vec3{0, -0.7071, 0}},
 		},
 		{
 			"heading 180 degree",
@@ -354,14 +354,14 @@ func TestQuatLookAtV(t *testing.T) {
 			&Vec3{0, 0, 0},
 			&Vec3{0, 0, -1},
 			&Vec3{1, 0, 0},
-			&Quaternion{0.7071, Vec3{0, 0, 0.7071}},
+			&Quaternion{0.7071, Vec3{0, 0, -0.7071}},
 		},
 		{
 			"bank 90 degree",
 			&Vec3{0, 0, 0},
 			&Vec3{0, -1, 0},
 			&Vec3{0, 0, -1},
-			&Quaternion{0.7071, Vec3{0.7071, 0, 0}},
+			&Quaternion{0.7071, Vec3{-0.7071, 0, 0}},
 		},
 	}
 
@@ -492,7 +492,8 @@ func TestCompareLookAt(t *testing.T) {
 			v4 := o.Vec4(0)
 			mv4 := m.Mul4x1(&v4)
 			rm := mv4.Vec3()
-			rq := q.Rotate(o)
+			qi := q.Inverse()
+			rq := qi.Rotate(o)
 
 			if !rq.EqualThreshold(&rm, threshold) {
 				t.Errorf("%v failed: QuatLookAtV() != LookAtV()", c.Description)
