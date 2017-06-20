@@ -36,10 +36,10 @@ func (color *Color) FromRGBu8(r, g, b uint8) {
 
 func hue2rgb(p, q, t float32) float32 {
 	if t < 0 {
-		t += 1
+		t++
 	}
 	if t > 1 {
-		t -= 1
+		t--
 	}
 	if t < 1./6 {
 		return p + (q-p)*6*t
