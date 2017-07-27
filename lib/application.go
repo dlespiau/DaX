@@ -20,14 +20,15 @@ func init() {
 	}
 }
 
+// Application object is the top level object from which everything else in DaX
+// is derived.
 type Application struct {
 	Name string
 
 	windows map[*glfw.Window]*Window
 }
 
-// NewApplication creates an Application. The Application object is the top
-// level object from which everything else in DaX is derived.
+// NewApplication creates a new Application. This is a singleton.
 func NewApplication(name string) *Application {
 	app := new(Application)
 	app.Name = name
