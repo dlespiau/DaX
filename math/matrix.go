@@ -1250,7 +1250,7 @@ func (m1 *Mat4) SubWith(m2 *Mat4) {
 	m1[15] -= m2[15]
 }
 
-// Mul performs a scalar multiplcation of the matrix. This is equivalent to iterating
+// Mul performs a scalar multiplication of the matrix. This is equivalent to iterating
 // over every element of the matrix and multiply it by c.
 func (m1 *Mat4) Mul(c float32) Mat4 {
 	return Mat4{m1[0] * c, m1[1] * c, m1[2] * c, m1[3] * c, m1[4] * c, m1[5] * c, m1[6] * c, m1[7] * c, m1[8] * c, m1[9] * c, m1[10] * c, m1[11] * c, m1[12] * c, m1[13] * c, m1[14] * c, m1[15] * c}
