@@ -637,8 +637,9 @@ func QuatLookAtV(eye, center, up *Vec3) Quaternion {
 
 	// Recompute up so that it's perpendicular to the direction
 	// You can skip that part if you really want to force up
-	//right := direction.Cross(up)
-	//up = right.Cross(direction)
+	// right := direction.Cross(up)
+	// newUp := right.Cross(&direction)
+	// up = &newUp
 
 	// Because of the 1st rotation, the up is probably completely screwed up.
 	// Find the rotation between the "up" of the rotated object, and the desired
