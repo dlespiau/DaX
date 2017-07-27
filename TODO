@@ -19,6 +19,13 @@
 - Choatic behaviours
 - Topological Mesh Modelling (TopMod):
   http://www.viz.tamu.edu/faculty/ergun/index.html
+- Tesseract passing through the 3D space
+- Simulation of stop motion
+- Maze generation + solving
+- Flocking simulation
+- Game of life
+- ascii art shader
+- L-systems
 
 = Inspiration
 
@@ -45,6 +52,7 @@
 - Camera (ortho, perspective)
 - Node
 - Material abstraction (aka Brush)
+- Cull geometry not in the camera frustrum
 - Basic shapes: cube, plane (rectangle), sphere, cylinder, ...
 - Standard 2D geometry paths and curves
 - AA 2D geometry by extruding contour
@@ -69,6 +77,7 @@
 == MIDI
 
 - midi integration with the APC40
+- midi integration with the Novation Launchpad (mini)
 - event when adding/removing a device
 - Expose scene properties as OSC endpoints
 
@@ -87,6 +96,27 @@
 - TV effect https://www.airtightinteractive.com/demos/js/badtvshader/
 - Sepia
 
-= Optimisations
+= Refactoring & Maintenance
+
+- Drop the custom 32-bit math code
+- move lib/ to / and dax.go into bin/mixer
+- make the examples be part of the same binary
+  - automate things for all examples, ie. create screenshots for each of them,
+    create documentation, ...
+- License + headers
+- Move sphere into geometry
+- Have a separate Upload in Mesh
+- FB interface shouldn't have viewport and projection, camera should have that
+- SetScene on windows should de reflection to make sure there's a Scene
+  embedded and use scene from there on.
+- Fix all linter warnings
+
+== Documentation
+
+- The DaX book:
+  - introduce all objects
+  - interesting examples should find their way there
+
+== Optimisations
 
 - A pass on HSL functions using Sam Hocevar's blog post
