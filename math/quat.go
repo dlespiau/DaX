@@ -1,5 +1,9 @@
 package math
 
+import (
+	"fmt"
+)
+
 // RotationOrder is the order in which
 // rotations will be transformed for the purposes of AnglesToQuat
 type RotationOrder int
@@ -41,6 +45,11 @@ type Quaternion struct {
 // same quaternion you started with.
 func QuatIdent() Quaternion {
 	return Quaternion{1, Vec3{0, 0, 0}}
+}
+
+// String implements io.Stringer for Quaternion.
+func (q *Quaternion) String() string {
+	return fmt.Sprintf("%f + %fi + %fj + %fk", q.W, q.I(), q.J(), q.K())
 }
 
 // QuatRotate creates a quaternion from an axis and an angle relative to that
