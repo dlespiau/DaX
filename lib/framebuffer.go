@@ -17,16 +17,12 @@ type Framebuffer interface {
 	Projection() *m.Mat4
 	SetProjection(projection *m.Mat4)
 
-	Draw(d Drawable)
+	Draw(d Drawer)
 
 	Screenshot() *image.RGBA
 
 	// private
 	render() *renderer
-}
-
-type Drawable interface {
-	draw(fb Framebuffer)
 }
 
 type onScreen struct {
@@ -57,8 +53,8 @@ func (fb *onScreen) render() *renderer {
 	return fb.renderer
 }
 
-func (fb *onScreen) Draw(d Drawable) {
-	d.draw(fb)
+func (fb *onScreen) Draw(d Drawer) {
+	d.Draw(fb)
 }
 
 func (fb *onScreen) SetSize(width, height int) {

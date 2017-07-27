@@ -77,6 +77,6 @@ func (sg *SceneGraph) Traverse() <-chan Grapher {
 	return ch
 }
 
-func (sg *SceneGraph) draw(fb Framebuffer) {
+func (sg *SceneGraph) Draw(fb Framebuffer) {
 	fb.render().drawSceneGraph(fb, sg)
 }

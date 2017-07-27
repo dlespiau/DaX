@@ -42,6 +42,6 @@ func (p *Polyline) AddPoint(point *m.Point) {
 func (p *Polyline) Positions() []float32 {
 	return p.vertices
 }
-func (p *Polyline) draw(fb Framebuffer) {
+func (p *Polyline) Draw(fb Framebuffer) {
 	fb.render().drawPolyline(fb, p)
 }
