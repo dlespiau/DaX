@@ -10,18 +10,41 @@ type Box struct {
 	NumWidthSegments, NumHeightSegments, NumDepthSegments int
 }
 
-func (box *Box) Validate() bool {
-	if box.NumWidthSegments < 1 {
-		box.NumWidthSegments = 1
-	}
-	if box.NumHeightSegments < 1 {
-		box.NumHeightSegments = 1
-	}
-	if box.NumDepthSegments < 1 {
-		box.NumDepthSegments = 1
+type BoxOptions struct {
+	NumWidthSegments, NumHeightSegments, NumDepthSegments int
+}
+
+var defaultBox = Box{
+	Width:             1.0,
+	Height:            1.0,
+	Depth:             1.0,
+	NumWidthSegments:  1,
+	NumHeightSegments: 1,
+	NumDepthSegments:  1,
+}
+
+// NewBox creates a new box geometry.
+func NewBox(width, height, depth float32, options ...BoxOptions) *Box {
+	box := defaultBox
+	box.Width = width
+	box.Height = height
+	box.Depth = depth
+
+	if len(options) == 0 {
+		return &box
 	}
 
-	return true
+	if options[0].NumWidthSegments > 0 {
+		box.NumWidthSegments = options[0].NumWidthSegments
+	}
+	if options[0].NumHeightSegments > 0 {
+		box.NumHeightSegments = options[0].NumHeightSegments
+	}
+	if options[0].NumDepthSegments > 0 {
+		box.NumDepthSegments = options[0].NumDepthSegments
+	}
+
+	return &box
 }
 
 type boxContext struct {
