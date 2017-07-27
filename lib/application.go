@@ -20,7 +20,7 @@ func init() {
 	}
 }
 
-type application struct {
+type Application struct {
 	Name string
 
 	windows map[*glfw.Window]*Window
@@ -28,22 +28,22 @@ type application struct {
 
 // NewApplication creates an Application. The Application object is the top
 // level object from which everything else in DaX is derived.
-func NewApplication(name string) *application {
-	app := new(application)
+func NewApplication(name string) *Application {
+	app := new(Application)
 	app.Name = name
 	app.windows = make(map[*glfw.Window]*Window)
 	return app
 }
 
-var _app *application
+var _app *Application
 
-func (app *application) addWindow(window *Window) {
+func (app *Application) addWindow(window *Window) {
 	// TODO: support multiple windows
 	app.windows[window.glfwWindow] = window
 }
 
 // Run enters the application main loop.
-func (app *application) Run() {
+func (app *Application) Run() {
 	for _, window := range app.windows {
 		for !window.glfwWindow.ShouldClose() {
 			window.Update()
@@ -55,7 +55,7 @@ func (app *application) Run() {
 }
 
 // CreateWindow creates a window on which scene will be drawn.
-func (app *application) CreateWindow(name string, width, height int) *Window {
+func (app *Application) CreateWindow(name string, width, height int) *Window {
 	_app = app
 
 	window := newWindow(app, name, width, height)
