@@ -5,13 +5,27 @@ import (
 )
 
 type Camera interface {
+	AsNode() *Node
 	UpdateFBSize(width, height int)
 	GetProjection() *math.Mat4
 }
 
+// BaseCamera is a struct that can be embedded to make creating custom cameras
+// easier. ScreenSpaceCamera, OrthographicCamera and PerspectiveCamera embed
+// this type and can be used as examples.
 type BaseCamera struct {
 	Node
 	projection math.Mat4
+}
+
+// Init initializes the BaseCamera. Call this function first before anything
+// else.
+func (c *BaseCamera) Init() {
+	c.Node.Init()
+}
+
+func (c *BaseCamera) AsNode() *Node {
+	return &c.Node
 }
 
 func (c *BaseCamera) GetProjection() *math.Mat4 {
@@ -32,6 +46,7 @@ type orthographicCamera struct {
 
 func NewOrthographicCamera(left, right, bottom, top, near, far float32) *orthographicCamera {
 	c := new(orthographicCamera)
+	c.Init()
 
 	c.projection = math.Ortho(left, right, bottom, top, near, far)
 	return c
@@ -52,6 +67,7 @@ func (c *screenSpaceCamera) updateProjection(width, height int) {
 
 func NewScreenSpaceCamera(width, height int, near, far float32) *screenSpaceCamera {
 	c := new(screenSpaceCamera)
+	c.Init()
 
 	c.near = near
 	c.far = far
@@ -75,6 +91,7 @@ func (c *perspectiveCamera) updateProjection() {
 
 func NewPerspectiveCamera(fovy, aspect, near, far float32) *perspectiveCamera {
 	c := new(perspectiveCamera)
+	c.Init()
 	c.fovy = fovy
 	c.aspect = aspect
 	c.near = near
