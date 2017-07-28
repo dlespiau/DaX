@@ -4,10 +4,13 @@ import (
 	math "github.com/dlespiau/dax/math"
 )
 
+// Color represents a color encoded in RGBA.
 type Color struct {
 	R, G, B, A float32
 }
 
+// FromRGBA initializes a color from (r,g,b,a) values. Components should be
+// between 0 and 1.
 func (color *Color) FromRGBA(r, g, b, a float32) {
 	color.R = r
 	color.G = g
@@ -15,6 +18,8 @@ func (color *Color) FromRGBA(r, g, b, a float32) {
 	color.A = a
 }
 
+// FromRGB initializes a color from (r,g,b) values. Components should be
+// between 0 and 1. The alpha is initiazed to 1 (fully opaque).
 func (color *Color) FromRGB(r, g, b float32) {
 	color.FromRGBA(r, g, b, 1.0)
 }
@@ -23,17 +28,20 @@ func u8toF(x uint8) float32 {
 	return float32(x) / 255.
 }
 
+// FromRGBAu8 initializes a color from (r,g,b,a) values. Components should be
+// between 0 and 255.
 func (color *Color) FromRGBAu8(r, g, b, a uint8) {
 	color.FromRGBA(u8toF(r), u8toF(g), u8toF(b), u8toF(a))
 }
 
+// FromRGBu8 initializes a color from (r,g,b) values. Components should be
+// between 0 and 255. The alpha is initiazed to 1 (ie 255, fully opaque).
 func (color *Color) FromRGBu8(r, g, b uint8) {
 	color.FromRGBAu8(r, g, b, 255)
 }
 
-// The RGB <-> HSL functions could do with some benchmarking and ideas from:
-//   http://lolengine.net/blog/2013/01/13/fast-rgb-to-hsv
-
+// XXX: The RGB <-> HSL functions could do with some benchmarking and ideas
+// from: http://lolengine.net/blog/2013/01/13/fast-rgb-to-hsv
 func hue2rgb(p, q, t float32) float32 {
 	if t < 0 {
 		t++
@@ -53,10 +61,9 @@ func hue2rgb(p, q, t float32) float32 {
 	return p
 }
 
-// Initialize a color from h, s, l values.
-// Conversion formula adapted from:
-//   http://en.wikipedia.org/wiki/HSL_color_space
-// h, s, l are in [0, 1]
+// FromHSL initializes a color from (h,s,l) values. h, s, l are between 0 and 1.
+// Conversion formula is adapted from:
+// http://en.wikipedia.org/wiki/HSL_color_space
 func (color *Color) FromHSL(h, s, l float32) {
 	color.A = 1.0
 
@@ -81,10 +88,9 @@ func (color *Color) FromHSL(h, s, l float32) {
 	color.B = hue2rgb(p, q, h-1./3)
 }
 
-// Convert a color to HSL.
-// Conversion formula adapted from:
-//   http://en.wikipedia.org/wiki/HSL_color_space.
-// h, s, l are in [0, 1]
+// ToHSL converts a color to HSL. Returned (h,s,l) components are between 0 and
+// 1. Conversion formula adapted from:
+// http://en.wikipedia.org/wiki/HSL_color_space.
 func (color *Color) ToHSL() (h, s, l float32) {
 	r := color.R
 	g := color.G
