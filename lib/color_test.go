@@ -59,3 +59,14 @@ func TestHSL(t *testing.T) {
 		assert.Equal(t, float32(1.0), color.A, 1e-2)
 	}
 }
+
+func TestColorVec4(t *testing.T) {
+	var color Color
+
+	color.FromRGBA(1, 2, 3, 4)
+	v := color.Vec4()
+	assert.Equal(t, float32(1.0), v[0])
+	assert.Equal(t, float32(2.0), v[1])
+	assert.Equal(t, float32(3.0), v[2])
+	assert.Equal(t, float32(4.0), v[3])
+}

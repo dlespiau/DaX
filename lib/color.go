@@ -132,3 +132,8 @@ func (color *Color) ToHSL() (h, s, l float32) {
 
 	return
 }
+
+// Vec4 returns a Vec4 with the 4 components of the color.
+func (color *Color) Vec4() math.Vec4 {
+	return math.Vec4{color.R, color.G, color.B, color.A}
+}
