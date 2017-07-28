@@ -5,6 +5,11 @@ type Mesher interface {
 	GetMesh() *Mesh
 }
 
+// Updater is an object that would like to be updated at very frame
+type Updater interface {
+	Update(time float64)
+}
+
 // Drawer is an object that can draw on a Framebuffer.
 type Drawer interface {
 	Draw(fb Framebuffer)

@@ -13,8 +13,8 @@ type Scener interface {
 	// generically clear the framebuffer
 	BackgroundColor() *Color
 
-	Update(time float64)
-	Draw(fb Framebuffer)
+	Updater
+	Drawer
 
 	// events
 	OnResize(fb Framebuffer, width, height int)
