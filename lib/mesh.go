@@ -140,11 +140,6 @@ func (ib *IndexBuffer) Upload() {
 	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, size, ptr, gl.STATIC_DRAW)
 }
 
-const (
-	has_position = 1 << iota
-	has_color
-)
-
 type Mesh struct {
 	flags      uint32
 	vao        uint32
