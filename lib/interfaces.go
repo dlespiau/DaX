@@ -9,3 +9,18 @@ type Mesher interface {
 type Drawer interface {
 	Draw(fb Framebuffer)
 }
+
+// Getter gets a value.
+type Getter interface {
+	Get() interface{}
+}
+
+// Setter sets a value.
+type Setter interface {
+	Set(interface{})
+}
+
+// Namer is an object with a name.
+type Namer interface {
+	Name() string
+}

@@ -6,20 +6,18 @@ import (
 	"github.com/go-gl/gl/v3.3-core/gl"
 )
 
+const (
+	polylineMaterial = "dax-polyline"
+)
+
 type renderer struct {
-	program uint32
+	programs map[string]uint32
 }
 
 func newRenderer() *renderer {
-	r := new(renderer)
-
-	program, err := newProgram(vertexShader, fragmentShader)
-	if err != nil {
-		panic(err)
+	return &renderer{
+		programs: make(map[string]uint32),
 	}
-	r.program = program
-
-	return r
 }
 
 func compileShader(source string, shaderType uint32) (uint32, error) {
@@ -46,13 +44,13 @@ func compileShader(source string, shaderType uint32) (uint32, error) {
 	return shader, nil
 }
 
-func newProgram(vertexShaderSource, fragmentShaderSource string) (uint32, error) {
-	vertexShader, err := compileShader(vertexShaderSource, gl.VERTEX_SHADER)
+func makeProgram(v *VertexShader, f *FragmentShader) (uint32, error) {
+	vertexShader, err := compileShader(v.source, gl.VERTEX_SHADER)
 	if err != nil {
 		return 0, err
 	}
 
-	fragmentShader, err := compileShader(fragmentShaderSource, gl.FRAGMENT_SHADER)
+	fragmentShader, err := compileShader(f.source, gl.FRAGMENT_SHADER)
 	if err != nil {
 		return 0, err
 	}
@@ -107,49 +105,57 @@ uniform mat4 mvp;
 
 void main(){
 	gl_Position = mvp * vec4(position, 1.0f);
-}
-` + "\x00"
-
-/*
-var fragmentShader = `
-#version 330
-uniform sampler2D tex;
-in vec2 fragTexCoord;
-out vec4 outputColor;
-void main() {
-    outputColor = texture(tex, fragTexCoord);
-}
-` + "0x00"
-*/
+}`
 
 const fragmentShader = `
 #version 330
+uniform vec4 color;
 out vec4 outputColor;
 void main() {
-    outputColor = vec4(.8, .8, .8, 1);
+    outputColor = color;
+}`
+
+func (r *renderer) makePolylineProgram() uint32 {
+	if p, ok := r.programs[polylineMaterial]; ok {
+		return p
+	}
+
+	v := NewVertexShader(vertexShader)
+	s := NewFragmentShader(fragmentShader)
+	p, err := makeProgram(v, s)
+	if err != nil {
+		panic(err)
+	}
+	r.programs[polylineMaterial] = p
+	return p
 }
-` + "\x00"
 
 func (r *renderer) drawPolyline(fb Framebuffer, p *Polyline) {
 	if p.Size() == 0 {
 		return
 	}
 
+	program := r.makePolylineProgram()
+
 	mesh := NewMesh()
 	defer mesh.Destroy()
 	mesh.AddAttribute("position", p.vertices, 3)
 	mesh.Bind()
 
-	gl.UseProgram(r.program)
+	gl.UseProgram(program)
 
-	gl.BindFragDataLocation(r.program, 0, gl.Str("outputColor\x00"))
+	gl.BindFragDataLocation(program, 0, gl.Str("outputColor\x00"))
 
-	position := uint32(gl.GetAttribLocation(r.program, gl.Str("position\x00")))
+	position := uint32(gl.GetAttribLocation(program, gl.Str("position\x00")))
 	gl.EnableVertexAttribArray(position)
 	gl.VertexAttribPointer(position, 3, gl.FLOAT, false, 0, gl.PtrOffset(0))
 
-	mvp := gl.GetUniformLocation(r.program, gl.Str("mvp\x00"))
+	mvp := gl.GetUniformLocation(program, gl.Str("mvp\x00"))
 	gl.UniformMatrix4fv(mvp, 1, false, &fb.Projection()[0])
+
+	color := gl.GetUniformLocation(program, gl.Str("color\x00"))
+	whiteish := (&Color{.8, .8, .8, 1}).Vec4()
+	gl.Uniform4fv(color, 1, &whiteish[0])
 
 	gl.DrawArrays(gl.LINE_STRIP, 0, int32(p.Size()))
 }
