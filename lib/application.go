@@ -12,11 +12,11 @@ func init() {
 	runtime.LockOSThread()
 
 	if err := glfw.Init(); err != nil {
-		log.Fatalln("failed to initialize glfw: ", err)
+		log.Fatalln("failed to initialize glfw:", err)
 	}
 
 	if err := gl.Init(); err != nil {
-		panic(err)
+		log.Fatalln("failed to initialize gl:", err)
 	}
 }
 
