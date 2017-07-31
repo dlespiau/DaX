@@ -16,15 +16,14 @@ void main() {
 
 const testUniformName = "foo"
 
-func TestCStrings(t *testing.T) {
+func TestFragmentShaderCreation(t *testing.T) {
 	s := NewFragmentShader(testFragmentShaderSource)
-
-	for i := UniformKind(0); i < uniformKindMax; i++ {
+	for i := VariableKind(0); i < variableKindMax; i++ {
 		s.AddUniform(i, fmt.Sprintf("%s-%d", testUniformName, i))
 	}
 
-	assert.Equal(t, testFragmentShaderSource+"\x00", s.source)
-	assert.Equal(t, int(uniformKindMax), len(s.uniforms))
+	assert.Equal(t, testFragmentShaderSource, s.source)
+	assert.Equal(t, int(variableKindMax), len(s.uniforms))
 	for i := range s.uniforms {
 		name := fmt.Sprintf("%s-%d", testUniformName, i)
 		assert.Equal(t, name, s.uniforms[i].Name())

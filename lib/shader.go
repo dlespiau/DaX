@@ -2,48 +2,72 @@ package dax
 
 import "github.com/dlespiau/dax/math"
 
-// UniformKind defines the kind of uniform.
-type UniformKind int
+// VariableKind defines the type of a variable in a shader.
+type VariableKind int
 
 const (
-	// UniformKindFloat is a float uniform.
-	UniformKindFloat UniformKind = iota
-	// UniformKindVec2 is a vec2 uniform.
-	UniformKindVec2
-	// UniformKindVec3 is a vec3 uniform.
-	UniformKindVec3
-	// UniformKindVec4 is a vec4 uniform.
-	UniformKindVec4
-	// UniformKindMatrix is a matrix uniform.
-	UniformKindMatrix
-	uniformKindMax
+	// VariableKindFloat is a float uniform.
+	VariableKindFloat VariableKind = iota
+	// VariableKindVec2 is a vec2 uniform.
+	VariableKindVec2
+	// VariableKindVec3 is a vec3 uniform.
+	VariableKindVec3
+	// VariableKindVec4 is a vec4 uniform.
+	VariableKindVec4
+	// VariableKindMat4 is a 4x4 matrix uniform.
+	VariableKindMat4
+	variableKindMax
 )
+
+type baseVariable struct {
+	name string
+	kind VariableKind
+}
+
+// Name returns the name of the uniform.
+func (u *baseVariable) Name() string {
+	return u.name
+}
+
+// Kind returns the kind of uniform
+func (u *baseVariable) Kind() VariableKind {
+	return u.kind
+}
+
+// Attribute is per-vertex data as input to the vertex shader.
+type Attribute struct {
+	baseVariable
+}
 
 // Uniform is a shader parameter, constant per draw call.
 type Uniform interface {
 	Namer
-	Kind() UniformKind
+	Kind() VariableKind
 	Getter
 	Setter
 }
 
-type baseUniform struct {
-	name string // NUL-terminated string (GL drivers needs C strings)
-	kind UniformKind
+// builtin uniforms are those magical uniforms we'll detect and upload
+// automatically in the core rendering engine.
+
+var builtinUniforms = [...]string{
+	"mvp",
 }
 
-// Name returns the name of the uniform.
-func (u *baseUniform) Name() string {
-	return u.name[:len(u.name)-1]
+type builtinUniform struct {
+	baseVariable
 }
 
-// Kind returns the kind of uniform
-func (u *baseUniform) Kind() UniformKind {
-	return u.kind
+func (u *builtinUniform) Get() interface{} {
+	panic("can't get builtin uniforms")
+}
+
+func (u *builtinUniform) Set(v interface{}) {
+	panic("can't set builtin uniforms")
 }
 
 type floatUniform struct {
-	baseUniform
+	baseVariable
 	val float32
 }
 
@@ -56,7 +80,7 @@ func (u *floatUniform) Set(v interface{}) {
 }
 
 type vec2Uniform struct {
-	baseUniform
+	baseVariable
 	val math.Vec2
 }
 
@@ -69,7 +93,7 @@ func (u *vec2Uniform) Set(v interface{}) {
 }
 
 type vec3Uniform struct {
-	baseUniform
+	baseVariable
 	val math.Vec3
 }
 
@@ -82,7 +106,7 @@ func (u *vec3Uniform) Set(v interface{}) {
 }
 
 type vec4Uniform struct {
-	baseUniform
+	baseVariable
 	val math.Vec4
 }
 
@@ -99,56 +123,68 @@ func (u *vec4Uniform) Set(value interface{}) {
 	}
 }
 
-type matrixUniform struct {
-	baseUniform
+type mat4Uniform struct {
+	baseVariable
 	val math.Mat4
 }
 
-func (u *matrixUniform) Get() interface{} {
+func (u *mat4Uniform) Get() interface{} {
 	return u.val
 }
 
-func (u *matrixUniform) Set(v interface{}) {
+func (u *mat4Uniform) Set(v interface{}) {
 	u.val = v.(math.Mat4)
 }
 
-func createUniform(kind UniformKind, name string) Uniform {
+func createUniform(kind VariableKind, name string) Uniform {
 	var u Uniform
 
+	// Builtin uniforms are a bit special.
+	for i := range builtinUniforms {
+		if builtinUniforms[i] == name {
+			return &builtinUniform{
+				baseVariable: baseVariable{
+					kind: kind,
+					name: name,
+				},
+			}
+		}
+	}
+
 	switch kind {
-	case UniformKindFloat:
+	case VariableKindFloat:
 		u = &floatUniform{
-			baseUniform: baseUniform{
-				kind: UniformKindFloat,
-				name: name + "\x00",
+			baseVariable: baseVariable{
+				kind: VariableKindFloat,
+				name: name,
 			},
 		}
-	case UniformKindVec2:
+	case VariableKindVec2:
 		u = &vec2Uniform{
-			baseUniform: baseUniform{
-				kind: UniformKindVec2,
-				name: name + "\x00",
+			baseVariable: baseVariable{
+				kind: VariableKindVec2,
+				name: name,
 			},
 		}
-	case UniformKindVec3:
+	case VariableKindVec3:
 		u = &vec3Uniform{
-			baseUniform: baseUniform{
-				kind: UniformKindVec3,
-				name: name + "\x00",
+			baseVariable: baseVariable{
+				kind: VariableKindVec3,
+				name: name,
 			},
 		}
-	case UniformKindVec4:
+	case VariableKindVec4:
 		u = &vec4Uniform{
-			baseUniform: baseUniform{
-				kind: UniformKindVec4,
-				name: name + "\x00",
+			baseVariable: baseVariable{
+				kind: VariableKindVec4,
+				name: name,
 			},
 		}
-	case UniformKindMatrix:
-		u = &matrixUniform{
-			baseUniform: baseUniform{
-				kind: UniformKindMatrix,
-				name: name + "\x00",
+	case VariableKindMat4:
+		u = &mat4Uniform{
+			baseVariable: baseVariable{
+				kind: VariableKindMat4,
+				name: name,
 			},
 		}
 	}
@@ -157,7 +193,7 @@ func createUniform(kind UniformKind, name string) Uniform {
 }
 
 type baseShader struct {
-	source   string // NUL-terminated string (GL drivers needs C strings)
+	source   string
 	uniforms []Uniform
 }
 
@@ -172,7 +208,7 @@ func (s *baseShader) Uniform(name string) Uniform {
 }
 
 // AddUniform adds a uniform to a shader.
-func (s *baseShader) AddUniform(kind UniformKind, name string) Uniform {
+func (s *baseShader) AddUniform(kind VariableKind, name string) Uniform {
 	u := createUniform(kind, name)
 	s.uniforms = append(s.uniforms, u)
 	return u
@@ -181,15 +217,28 @@ func (s *baseShader) AddUniform(kind UniformKind, name string) Uniform {
 // VertexShader is a program that runs for each vertex.
 type VertexShader struct {
 	baseShader
+	attributes []Attribute
 }
 
 // NewVertexShader creates a vertex shader.
 func NewVertexShader(source string) *VertexShader {
 	return &VertexShader{
 		baseShader: baseShader{
-			source: source + "\x00",
+			source: source,
 		},
 	}
+}
+
+// AddAttribute adds an attribute to a vertex shader.
+func (vs *VertexShader) AddAttribute(kind VariableKind, name string) *Attribute {
+	a := Attribute{
+		baseVariable: baseVariable{
+			kind: kind,
+			name: name,
+		},
+	}
+	vs.attributes = append(vs.attributes, a)
+	return &a
 }
 
 // FragmentShader is a program that runs for each fragment.
@@ -202,7 +251,7 @@ func NewFragmentShader(source string) *FragmentShader {
 	return &FragmentShader{
 		baseShader: baseShader{
 
-			source: source + "\x00",
+			source: source,
 		},
 	}
 }
