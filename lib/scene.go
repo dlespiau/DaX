@@ -26,10 +26,29 @@ type Scener interface {
 	OnRuneEntered(r rune)
 }
 
+type sceneDirtyFlags uint
+
+const (
+	sceneDirtyCamera sceneDirtyFlags = 1 << iota
+)
+
 type Scene struct {
 	camera          Camera
 	name            string
 	backgroundColor Color
+	dirty           sceneDirtyFlags
+}
+
+func (s *Scene) isDirty(flag sceneDirtyFlags) bool {
+	return s.dirty&flag != 0
+}
+
+func (s *Scene) setDirty(flag sceneDirtyFlags) {
+	s.dirty |= flag
+}
+
+func (s *Scene) clearDirty(flag sceneDirtyFlags) {
+	s.dirty &= ^flag
 }
 
 func (s *Scene) Setup() {
@@ -68,7 +87,7 @@ func sceneSetup(s Scener, fb Framebuffer) {
 		// orthographic one placing (0, 0) at the top left corner and
 		// making (width - 1, height - 1) the bottom right corner
 		width, height := fb.Size()
-		scene.camera = NewScreenSpaceCamera(width, height, -1, 1)
+		scene.SetCamera(NewScreenSpaceCamera(width, height, -1, 1))
 	}
 }
 
@@ -92,6 +111,7 @@ func (s *Scene) SetCamera(camera Camera) {
 	}
 
 	s.camera = camera
+	s.setDirty(sceneDirtyCamera)
 }
 
 func sceneUpdate(s Scener, time float64) {
@@ -99,6 +119,15 @@ func sceneUpdate(s Scener, time float64) {
 }
 
 func (s *Scene) Update(time float64) {
+}
+
+func sceneDraw(s Scener, fb Framebuffer) {
+	scene := toScene(s)
+	if scene != nil && scene.isDirty(sceneDirtyCamera) {
+		fb.SetCamera(scene.camera)
+		scene.clearDirty(sceneDirtyCamera)
+	}
+	s.Draw(fb)
 }
 
 func (s *Scene) Draw(fb Framebuffer) {
@@ -109,8 +138,6 @@ func (s *Scene) OnResize(fb Framebuffer, width, height int) {
 	fb.SetViewport(0, 0, width, height)
 
 	s.camera.UpdateFBSize(width, height)
-	projection := s.camera.GetProjection()
-	fb.SetProjection(projection)
 }
 
 func (s *Scene) OnKeyPressed() {

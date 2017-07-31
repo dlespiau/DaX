@@ -5,17 +5,15 @@ import (
 	"unsafe"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
-
-	m "github.com/dlespiau/dax/math"
 )
 
 type Framebuffer interface {
 	Size() (width, height int)
 	SetSize(width, height int)
 
+	GetCamera() Camera
+	SetCamera(camera Camera)
 	SetViewport(x, y, width, height int)
-	Projection() *m.Mat4
-	SetProjection(projection *m.Mat4)
 
 	Draw(d Drawer)
 
@@ -28,7 +26,7 @@ type Framebuffer interface {
 type onScreen struct {
 	renderer      *renderer
 	width, height int
-	projection    m.Mat4
+	camera        Camera
 }
 
 func newOnScreen(width, height int) *onScreen {
@@ -41,12 +39,12 @@ func (fb *onScreen) Size() (width, height int) {
 	return fb.width, fb.height
 }
 
-func (fb *onScreen) Projection() *m.Mat4 {
-	return &fb.projection
+func (fb *onScreen) GetCamera() Camera {
+	return fb.camera
 }
 
-func (fb *onScreen) SetProjection(projection *m.Mat4) {
-	fb.projection = *projection
+func (fb *onScreen) SetCamera(camera Camera) {
+	fb.camera = camera
 }
 
 func (fb *onScreen) render() *renderer {

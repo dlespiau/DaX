@@ -151,7 +151,7 @@ func (r *renderer) drawPolyline(fb Framebuffer, p *Polyline) {
 	gl.VertexAttribPointer(position, 3, gl.FLOAT, false, 0, gl.PtrOffset(0))
 
 	mvp := gl.GetUniformLocation(program, gl.Str("mvp\x00"))
-	gl.UniformMatrix4fv(mvp, 1, false, &fb.Projection()[0])
+	gl.UniformMatrix4fv(mvp, 1, false, &fb.GetCamera().GetProjection()[0])
 
 	color := gl.GetUniformLocation(program, gl.Str("color\x00"))
 	whiteish := (&Color{.8, .8, .8, 1}).Vec4()
