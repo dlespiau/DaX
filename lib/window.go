@@ -69,8 +69,8 @@ func (w *Window) Draw() {
 	c := w.scene.BackgroundColor()
 
 	gl.ClearColor(c.R, c.G, c.B, c.A)
-	gl.Clear(gl.COLOR_BUFFER_BIT)
-	w.scene.Draw(w.fb)
+	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	sceneDraw(w.scene, w.fb)
 }
 
 func (w *Window) Close() {

@@ -157,3 +157,11 @@ func (s *Scene) OnMouseButtonReleased(button MouseButton, x, y float32) {
 
 func (s *Scene) OnRuneEntered(r rune) {
 }
+
+// CreateActor creates a new node that renders a mesh with a material. This
+// function is a convenience function that creates a Node and adds a
+// MeshRenderer component to it.
+func (s *Scene) CreateActor(mesher Mesher, material Material) *Node {
+	mr := NewMeshRenderer(mesher, material)
+	return NewNode().AddComponent(mr)
+}

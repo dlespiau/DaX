@@ -16,8 +16,15 @@ type Node struct {
 	rotation math.Quaternion
 	scale    math.Vec3
 
-	transform      math.Transform
+	transform math.Transform
+	// worldTransform is the local space to world space transform matrix. It is
+	// only valid between an updateWorldTransform() and any scene graph
+	// manipulation. In other word, internal passes on the scene graph, like
+	// rendering passes.
 	worldTransform math.Transform
+
+	// List of components.
+	components []interface{}
 }
 
 func NewNode() *Node {
@@ -203,21 +210,40 @@ func (n *Node) updateWorldTransform(force bool) {
 	}
 }
 
+// Components
+
+func (n *Node) AddComponent(c interface{}) *Node {
+	n.components = append(n.components, c)
+	return n
+}
+
 // Grapher implementation
 
+// GetParent returns the paren of the node n.
 func (n *Node) GetParent() Grapher {
 	return n.parent
 }
 
-func (n *Node) SetParent(parent Grapher) {
+// setParent parents the node n to parent.
+func (n *Node) setParent(parent Grapher) {
 	n.parent = parent
 }
 
+// AddChild adds a child the node.
 func (n *Node) AddChild(child Grapher) {
-	child.SetParent(n)
+	childNode := child.(*Node)
+	childNode.setParent(n)
 	n.children = append(n.children, child)
 }
 
+// AddChildren adds a number of children to the node n.
+func (n *Node) AddChildren(children ...Grapher) {
+	for i := range children {
+		n.AddChild(children[i])
+	}
+}
+
+// GetChildren returns the list of children for the node n.
 func (n *Node) GetChildren() []Grapher {
 	return n.children
 }

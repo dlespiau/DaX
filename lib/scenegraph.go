@@ -1,7 +1,7 @@
 package dax
 
+// Grapher is an interface for objects that can be put into a graph.
 type Grapher interface {
-	SetParent(parent Grapher)
 	GetParent() Grapher
 	AddChild(child Grapher)
 	GetChildren() []Grapher

@@ -9,6 +9,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func assertFloat(t *testing.T, exp, val, epsilon float32) {
+	if math.FloatEqualThreshold(exp, val, epsilon) {
+		return
+	}
+
+	fmt.Fprintf(os.Stderr, "Expected %v, got %v\n", exp, val)
+	assert.True(t, false)
+}
+
 func assertVec2(t *testing.T, exp, val *math.Vec2, epsilon float32) {
 	if math.FloatEqualThreshold(exp[0], val[0], epsilon) &&
 		math.FloatEqualThreshold(exp[1], val[1], epsilon) {

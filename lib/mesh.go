@@ -1,99 +1,89 @@
 package dax
 
-import (
-	"unsafe"
-
-	"github.com/go-gl/gl/v3.3-core/gl"
-)
-
+// AttributeBuffer holds per-vertex attribute. There is one AttributeBuffer per
+// kind of data we want to keep with each vertex.
 type AttributeBuffer struct {
-	Name        string
-	nComponents int
-	Data        []float32
-	vbo         uint32
+	Name          string
+	NumComponents int
+	Data          []float32
 }
 
-func NewAttributeBuffer(name string, size int, nComponents int) *AttributeBuffer {
+func NewAttributeBuffer(name string, size int, NumComponents int) *AttributeBuffer {
 	ab := new(AttributeBuffer)
-	ab.Init(name, size, nComponents)
+	ab.Init(name, size, NumComponents)
 	return ab
 }
 
-func (ab *AttributeBuffer) Init(name string, size int, nComponents int) {
-	data := make([]float32, size*nComponents, size*nComponents)
-	ab.InitFromData(name, data, nComponents)
+func (ab *AttributeBuffer) Init(name string, size int, NumComponents int) {
+	data := make([]float32, size*NumComponents, size*NumComponents)
+	ab.InitFromData(name, data, NumComponents)
 }
 
-func (ab *AttributeBuffer) InitFromData(name string, data []float32, nComponents int) {
+func (ab *AttributeBuffer) InitFromData(name string, data []float32, NumComponents int) {
 	ab.Name = name
-	ab.nComponents = nComponents
+	ab.NumComponents = NumComponents
 	ab.Data = data
-
-	gl.GenBuffers(1, &ab.vbo)
 }
 
-func (ab *AttributeBuffer) Destroy() {
-	gl.DeleteBuffers(1, &ab.vbo)
+// Len returns the number of elements in the AttributeBuffer. Because each
+// element has a number of components, the length of the Data array is then
+// Len() * NumComponents.
+func (ab *AttributeBuffer) Len() int {
+	return len(ab.Data) / ab.NumComponents
 }
 
 func (ab *AttributeBuffer) SetX(index int, x float32) {
-	ab.Data[index*ab.nComponents+0] = x
+	ab.Data[index*ab.NumComponents+0] = x
 }
 
 func (ab *AttributeBuffer) GetX(index int) (x float32) {
-	x = ab.Data[index*ab.nComponents+0]
+	x = ab.Data[index*ab.NumComponents+0]
 	return
 }
 
 func (ab *AttributeBuffer) SetXY(index int, x, y float32) {
-	ab.Data[index*ab.nComponents+0] = x
-	ab.Data[index*ab.nComponents+1] = y
+	ab.Data[index*ab.NumComponents+0] = x
+	ab.Data[index*ab.NumComponents+1] = y
 }
 
 func (ab *AttributeBuffer) GetXY(index int) (x, y float32) {
-	x = ab.Data[index*ab.nComponents+0]
-	y = ab.Data[index*ab.nComponents+1]
+	x = ab.Data[index*ab.NumComponents+0]
+	y = ab.Data[index*ab.NumComponents+1]
 	return
 }
 
 func (ab *AttributeBuffer) SetXYZ(index int, x, y, z float32) {
-	ab.Data[index*ab.nComponents+0] = x
-	ab.Data[index*ab.nComponents+1] = y
-	ab.Data[index*ab.nComponents+2] = z
+	ab.Data[index*ab.NumComponents+0] = x
+	ab.Data[index*ab.NumComponents+1] = y
+	ab.Data[index*ab.NumComponents+2] = z
 }
 
 func (ab *AttributeBuffer) GetXYZ(index int) (x, y, z float32) {
-	x = ab.Data[index*ab.nComponents+0]
-	y = ab.Data[index*ab.nComponents+1]
-	z = ab.Data[index*ab.nComponents+2]
+	x = ab.Data[index*ab.NumComponents+0]
+	y = ab.Data[index*ab.NumComponents+1]
+	z = ab.Data[index*ab.NumComponents+2]
 	return
 }
 
 func (ab *AttributeBuffer) SetXYZW(index int, x, y, z, w float32) {
-	ab.Data[index*ab.nComponents+0] = x
-	ab.Data[index*ab.nComponents+1] = y
-	ab.Data[index*ab.nComponents+2] = z
-	ab.Data[index*ab.nComponents+3] = w
+	ab.Data[index*ab.NumComponents+0] = x
+	ab.Data[index*ab.NumComponents+1] = y
+	ab.Data[index*ab.NumComponents+2] = z
+	ab.Data[index*ab.NumComponents+3] = w
 
 }
 
 func (ab *AttributeBuffer) GetXYZW(index int) (x, y, z, w float32) {
-	x = ab.Data[index*ab.nComponents+0]
-	y = ab.Data[index*ab.nComponents+1]
-	z = ab.Data[index*ab.nComponents+2]
-	w = ab.Data[index*ab.nComponents+3]
+	x = ab.Data[index*ab.NumComponents+0]
+	y = ab.Data[index*ab.NumComponents+1]
+	z = ab.Data[index*ab.NumComponents+2]
+	w = ab.Data[index*ab.NumComponents+3]
 	return
-}
-
-func (ab *AttributeBuffer) Upload() {
-	gl.BindBuffer(gl.ARRAY_BUFFER, ab.vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(ab.Data)*4, gl.Ptr(ab.Data), gl.STATIC_DRAW)
 }
 
 type IndexBuffer struct {
 	data16 []uint16
 	data32 []uint32
-	vbo    uint32
 }
 
 func (ib *IndexBuffer) Init(size int) {
@@ -102,7 +92,13 @@ func (ib *IndexBuffer) Init(size int) {
 	} else {
 		ib.data16 = make([]uint16, size, size)
 	}
-	gl.GenBuffers(1, &ib.vbo)
+}
+
+func (ib *IndexBuffer) Len() int {
+	if len(ib.data16) > 0 {
+		return len(ib.data16)
+	}
+	return len(ib.data32)
 }
 
 func (ib *IndexBuffer) InitFromData(data []uint) {
@@ -110,10 +106,6 @@ func (ib *IndexBuffer) InitFromData(data []uint) {
 	for i, v := range data {
 		ib.Set(i, v)
 	}
-}
-
-func (ib *IndexBuffer) Destroy() {
-	gl.DeleteBuffers(1, &ib.vbo)
 }
 
 func (ib *IndexBuffer) Set(nth int, index uint) {
@@ -124,43 +116,44 @@ func (ib *IndexBuffer) Set(nth int, index uint) {
 	}
 }
 
-func (ib *IndexBuffer) Upload() {
-	var size int
-	var ptr unsafe.Pointer
+// VertexMode defines how vertices should be interpreted by the draw call.
+type VertexMode int
 
-	if ib.data16 != nil {
-		size = len(ib.data16) * 2
-		ptr = gl.Ptr(ib.data16)
-	} else {
-		size = len(ib.data32) * 4
-		ptr = gl.Ptr(ib.data32)
-	}
-
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib.vbo)
-	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, size, ptr, gl.STATIC_DRAW)
-}
+const (
+	// VertexModePoints draws a single dot for each vertex.
+	VertexModePoints VertexMode = iota
+	VertexModeLineStrip
+	VertexModeLineLoop
+	VertexModeLines
+	VertexModeTriangleStrip
+	VertexModeTriangleFan
+	VertexModeTriangles
+)
 
 type Mesh struct {
 	flags      uint32
-	vao        uint32
+	mode       VertexMode
 	attributes []AttributeBuffer
 	indices    IndexBuffer
 }
 
 func NewMesh() *Mesh {
-	m := new(Mesh)
-
-	gl.GenVertexArrays(1, &m.vao)
+	m := &Mesh{
+		mode: VertexModeTriangles,
+	}
 
 	return m
 }
 
-func (m *Mesh) Destroy() {
-	for _, ab := range m.attributes {
-		ab.Destroy()
-	}
-	m.indices.Destroy()
-	gl.DeleteVertexArrays(1, &m.vao)
+// GetVertexMode returns how vertices in the Mesh are interpreted. New meshes
+// default to VertexModeTriangles.
+func (m *Mesh) GetVertexMode() VertexMode {
+	return m.mode
+}
+
+// SetVertexMode sets how vertices in the should be interpreted.
+func (m *Mesh) SetVertexMode(mode VertexMode) {
+	m.mode = mode
 }
 
 func (m *Mesh) GetAttribute(name string) *AttributeBuffer {
@@ -176,31 +169,23 @@ func (m *Mesh) GetAttribute(name string) *AttributeBuffer {
 func (m *Mesh) getNewAttribute(name string) *AttributeBuffer {
 	ab := m.GetAttribute(name)
 	if ab != nil {
-		ab.Destroy()
-	} else {
-		var buffer AttributeBuffer
-
-		m.attributes = append(m.attributes, buffer)
-		ab = &m.attributes[len(m.attributes)-1]
+		return ab
 	}
 
-	return ab
+	var buffer AttributeBuffer
+
+	m.attributes = append(m.attributes, buffer)
+	return &m.attributes[len(m.attributes)-1]
 }
 
-func (m *Mesh) AddAttribute(name string, data []float32, nComponents int) {
-	m.Bind()
-
+func (m *Mesh) AddAttribute(name string, data []float32, NumComponents int) {
 	ab := m.getNewAttribute(name)
-	ab.InitFromData(name, data, nComponents)
-	ab.Upload()
+	ab.InitFromData(name, data, NumComponents)
 }
 
 func (m *Mesh) AddAttributeBuffer(buffer *AttributeBuffer) {
-	m.Bind()
-
 	ab := m.getNewAttribute(buffer.Name)
 	*ab = *buffer
-	ab.Upload()
 }
 
 func (m *Mesh) HasIndices() bool {
@@ -208,12 +193,5 @@ func (m *Mesh) HasIndices() bool {
 }
 
 func (m *Mesh) AddIndices(data []uint) {
-	m.Bind()
-
 	m.indices.InitFromData(data)
-	m.indices.Upload()
-}
-
-func (m *Mesh) Bind() {
-	gl.BindVertexArray(m.vao)
 }
