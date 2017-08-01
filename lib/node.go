@@ -93,17 +93,14 @@ func (n *Node) RotateAroundAxis(axis *math.Vec3, angle float32) {
 
 func (n *Node) RotateX(angle float32) {
 	n.RotateAroundAxis(&math.Vec3{1, 0, 0}, angle)
-	n.transformValid = false
 }
 
 func (n *Node) RotateY(angle float32) {
 	n.RotateAroundAxis(&math.Vec3{0, 1, 0}, angle)
-	n.transformValid = false
 }
 
 func (n *Node) RotateZ(angle float32) {
 	n.RotateAroundAxis(&math.Vec3{0, 0, 1}, angle)
-	n.transformValid = false
 }
 
 func (n *Node) GetScale() *math.Vec3 {
