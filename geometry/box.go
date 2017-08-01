@@ -157,6 +157,7 @@ func (b *Box) GetMesh() *dax.Mesh {
 	m.AddAttribute("position", ctx.positions, 3)
 	m.AddAttribute("normal", ctx.normals, 3)
 	m.AddAttribute("uv", ctx.uvs, 2)
+	m.AddIndices(ctx.indices)
 
 	return m
 }
