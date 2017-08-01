@@ -51,9 +51,6 @@
 
 - Logging facility
 - Provide a way to report errors to the applicaton and remove panics.
-- Camera (ortho, perspective)
-- Node
-- Material abstraction (aka Brush)
 - Cull geometry not in the camera frustrum
 - Basic shapes: cube, plane (rectangle), sphere, cylinder, ...
 - Standard 2D geometry paths and curves
@@ -70,6 +67,8 @@
 - Stats support (FPS, number of drall calls?)
 - Store the viewport in the camera object
 - Remove the stencil buffer
+- Activate depth testing
+- Play with GopherJS
 
 == Scene
 
@@ -115,6 +114,7 @@
 - SetScene on windows should de reflection to make sure there's a Scene
   embedded and use scene from there on.
 - Fix all linter warnings
+- Use gometalinter
 - Remove gl usage outside of render(er).go
 - Camera as a component?
 - Use UBO?
