@@ -26,6 +26,7 @@
 - Game of life
 - ascii art shader
 - L-systems
+- http://wavegrower.tumblr.com/
 
 = Inspiration
 
@@ -49,6 +50,7 @@
 == Core
 
 - Logging facility
+- Provide a way to report errors to the applicaton and remove panics.
 - Camera (ortho, perspective)
 - Node
 - Material abstraction (aka Brush)
@@ -67,6 +69,7 @@
 - Text support
 - Stats support (FPS, number of drall calls?)
 - Store the viewport in the camera object
+- Remove the stencil buffer
 
 == Scene
 
@@ -98,7 +101,9 @@
 
 = Refactoring & Maintenance
 
-- Drop the custom 32-bit math code
+- Vendor lib/flags
+- Drop the custom 32-bit math code?
+- move background color to the window object
 - move lib/ to / and dax.go into bin/mixer
 - make the examples be part of the same binary
   - automate things for all examples, ie. create screenshots for each of them,
@@ -110,6 +115,11 @@
 - SetScene on windows should de reflection to make sure there's a Scene
   embedded and use scene from there on.
 - Fix all linter warnings
+- Remove gl usage outside of render(er).go
+- Camera as a component?
+- Use UBO?
+- move 3d-related math objects to the dax package (or another package). Don't
+  want to mix stdlib 32-bit code with Mat4, Quaternions, ...
 
 == Documentation
 
