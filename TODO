@@ -52,13 +52,12 @@
 - Logging facility
 - Provide a way to report errors to the applicaton and remove panics.
 - Cull geometry not in the camera frustrum
-- Basic shapes: cube, plane (rectangle), sphere, cylinder, ...
+- Basic shapes: plane (rectangle), sphere, cylinder, ...
 - Standard 2D geometry paths and curves
 - AA 2D geometry by extruding contour
     https://mattdesl.svbtle.com/drawing-lines-is-hard
     https://github.com/tyt2y3/vaserenderer
 - Load image as texture
-- Node object (position + orientation)
 - Animated gif creation
 - Video creation
 - F11 for fullscreen
@@ -100,16 +99,13 @@
 
 = Refactoring & Maintenance
 
-- Drop the custom 32-bit math code?
 - move background color to the window object
 - Add a command to dax-examples to create a screenshot for each example.
 - Add a command to dax-examples a md file with screen shots of the examples.
-- Have a separate Upload in Mesh
-- FB interface shouldn't have viewport and projection, camera should have that
+- FB interface shouldn't have the viewport, camera should have that
 - SetScene on windows should de reflection to make sure there's a Scene
   embedded and use scene from there on.
-- Fix all linter warnings
-- Use gometalinter
+- Fix golint warnings
 - Remove gl usage outside of render(er).go
 - Camera as a component?
 - Use UBO?
