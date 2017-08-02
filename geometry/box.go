@@ -5,11 +5,16 @@ import (
 	"github.com/dlespiau/dax/math"
 )
 
+// Box is a rectangular cuboid centered around (0, 0, 0) with sizes Width,
+// Height and Depth on the X, Y and Z axis respectively. Some control over the
+// tesselation of each face is given through the number of segments on each
+// direction.
 type Box struct {
 	Width, Height, Depth                                  float32
 	NumWidthSegments, NumHeightSegments, NumDepthSegments int
 }
 
+// BoxOptions contains optional parameters for the Box constructors.
 type BoxOptions struct {
 	NumWidthSegments, NumHeightSegments, NumDepthSegments int
 }
@@ -23,7 +28,7 @@ var defaultBox = Box{
 	NumDepthSegments:  1,
 }
 
-// NewBox creates a new box geometry.
+// NewBox creates a new box.
 func NewBox(width, height, depth float32, options ...BoxOptions) *Box {
 	box := defaultBox
 	box.Width = width
@@ -105,7 +110,7 @@ func buildPlane(ctx *boxContext,
 			ctx.uvs = append(ctx.uvs, float32(ix)/float32(gridX), 1-(float32(iy)/float32(gridY)))
 
 			// counters
-			vertexCounter += 1
+			vertexCounter++
 
 		}
 
@@ -134,6 +139,7 @@ func buildPlane(ctx *boxContext,
 	ctx.nVertices += vertexCounter
 }
 
+// GetMesh is part of the dax.Mesher interface.
 func (b *Box) GetMesh() *dax.Mesh {
 
 	m := dax.NewMesh()
