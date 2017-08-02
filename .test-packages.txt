@@ -1,5 +1,5 @@
+github.com/dlespiau/dax
 github.com/dlespiau/dax/cmd/mixer
 github.com/dlespiau/dax/examples
 github.com/dlespiau/dax/geometry
-github.com/dlespiau/dax/lib
 github.com/dlespiau/dax/midi

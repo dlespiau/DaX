@@ -1,7 +1,7 @@
 package geometry
 
 import (
-	dax "github.com/dlespiau/dax/lib"
+	"github.com/dlespiau/dax"
 	"github.com/dlespiau/dax/math"
 )
 

@@ -1,6 +1,6 @@
 package material
 
-import dax "github.com/dlespiau/dax/lib"
+import "github.com/dlespiau/dax"
 
 // Color is the simplest material possible, just a color.
 type Color struct {

@@ -1,7 +1,7 @@
 package main
 
 import (
-	dax "github.com/dlespiau/dax/lib"
+	"github.com/dlespiau/dax"
 )
 
 var window *dax.Window

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	dax "github.com/dlespiau/dax/lib"
+	"github.com/dlespiau/dax"
 	"github.com/urfave/cli"
 )
 

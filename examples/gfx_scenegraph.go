@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/dlespiau/dax"
 	"github.com/dlespiau/dax/geometry"
-	dax "github.com/dlespiau/dax/lib"
 	"github.com/dlespiau/dax/material"
 )
 

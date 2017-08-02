@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	dax "github.com/dlespiau/dax/lib"
+	"github.com/dlespiau/dax"
 )
 
 // Category is a way to group examples by common area.

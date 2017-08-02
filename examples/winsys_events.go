@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	dax "github.com/dlespiau/dax/lib"
+	"github.com/dlespiau/dax"
 )
 
 type eventsBasic struct {

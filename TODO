@@ -100,10 +100,8 @@
 
 = Refactoring & Maintenance
 
-- Vendor lib/flags
 - Drop the custom 32-bit math code?
 - move background color to the window object
-- move lib/ to / and dax.go into bin/mixer
 - Add a command to dax-examples to create a screenshot for each example.
 - Add a command to dax-examples a md file with screen shots of the examples.
 - License + headers
