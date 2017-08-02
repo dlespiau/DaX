@@ -6,17 +6,13 @@ import (
 	"github.com/dlespiau/dax/material"
 )
 
-var window *dax.Window
-
-type Scene struct {
+type sceneGraphBasic struct {
 	dax.Scene
 
 	sg *dax.SceneGraph
-
-	leftButtonDown bool
 }
 
-func (s *Scene) Setup() {
+func (s *sceneGraphBasic) Setup() {
 	camera := dax.NewPerspectiveCamera(70, 800./600., 1, 1000)
 	camera.SetPosition(0, 0, 600)
 	s.SetCamera(camera)
@@ -37,14 +33,7 @@ func (s *Scene) Setup() {
 	s.sg.AddChildren(node1, node2, node3)
 }
 
-func (s *Scene) OnMouseButtonReleased(b dax.MouseButton, x, y float32) {
-	switch b {
-	case dax.MouseButtonLeft:
-		s.leftButtonDown = false
-	}
-}
-
-func (s *Scene) Update(time float64) {
+func (s *sceneGraphBasic) Update(time float64) {
 	for i, child := range s.sg.GetChildren() {
 		node := child.(*dax.Node)
 		node.RotateX(0.02 * float32(i+1))
@@ -52,15 +41,13 @@ func (s *Scene) Update(time float64) {
 	}
 }
 
-func (s *Scene) Draw(fb dax.Framebuffer) {
+func (s *sceneGraphBasic) Draw(fb dax.Framebuffer) {
 	fb.Draw(s.sg)
 }
 
-func main() {
-	app := dax.NewApplication("Scene Graph Example")
-
-	window := app.CreateWindow(app.Name, 800, 600)
-	window.SetScene(&Scene{})
-
-	app.Run()
+var sceneGraphBasicExample = Example{
+	Category:    CategoryGraphics,
+	Name:        "Scene Graph",
+	Description: "Display a few rotating cubes",
+	Scene:       &sceneGraphBasic{},
 }

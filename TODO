@@ -104,9 +104,8 @@
 - Drop the custom 32-bit math code?
 - move background color to the window object
 - move lib/ to / and dax.go into bin/mixer
-- make the examples be part of the same binary
-  - automate things for all examples, ie. create screenshots for each of them,
-    create documentation, ...
+- Add a command to dax-examples to create a screenshot for each example.
+- Add a command to dax-examples a md file with screen shots of the examples.
 - License + headers
 - Move sphere into geometry
 - Have a separate Upload in Mesh
