@@ -5,29 +5,22 @@ import (
 	"os"
 
 	//dax "github.com/dlespiau/dax/lib"
-	"github.com/dlespiau/dax/lib/flag"
 	"github.com/dlespiau/dax/midi"
+
+	"github.com/urfave/cli"
 )
 
-type Dax struct {
-	options struct {
-		list_midi_devices bool
-	}
-
+type dax struct {
 	seq *midi.Sequencer
 }
 
-var app Dax
-
-func init() {
-	flag.BoolVar(&app.options.list_midi_devices,
-		[]string{"-list-midi-devices"}, false,
-		"List the MIDI devices connected to the system")
-	flag.Parse()
+func (d *dax) Init() {
+	d.seq, _ = midi.NewSequencer("DaX", midi.OpenDuplex)
+	d.seq.CreateControllerPort("Controller")
 }
 
-func (app *Dax) listMidiDevices() {
-	for _, device := range app.seq.GetDevices() {
+func (d *dax) listMidiDevices() {
+	for _, device := range d.seq.GetDevices() {
 		fmt.Printf("%d: %s\n", device.Client, device.Name)
 		for _, port := range device.Ports {
 			fmt.Printf("    %d: %s\n", port.Port, port.Name)
@@ -35,18 +28,33 @@ func (app *Dax) listMidiDevices() {
 	}
 }
 
+func getDax(ctx *cli.Context) *dax {
+	return ctx.App.Metadata["dax"].(*dax)
+}
+
+func listMidiDevices(ctx *cli.Context) error {
+	dax := getDax(ctx)
+	dax.listMidiDevices()
+	return nil
+}
+
 func main() {
-	quit_early := false
+	dax := &dax{}
+	dax.Init()
 
-	app.seq, _ = midi.NewSequencer("DaX", midi.OpenDuplex)
-	app.seq.CreateControllerPort("Controller")
-
-	if app.options.list_midi_devices {
-		app.listMidiDevices()
-		quit_early = true
+	app := cli.NewApp()
+	app.Name = "DaX"
+	app.Usage = "Not sure what this is"
+	app.Commands = []cli.Command{
+		{
+			Name:   "list-midi-devices",
+			Usage:  "List the MIDI devices on the system",
+			Action: listMidiDevices,
+		},
 	}
-
-	if quit_early {
-		os.Exit(0)
+	app.HideVersion = true
+	app.Metadata = map[string]interface{}{
+		"dax": dax,
 	}
+	app.Run(os.Args)
 }
