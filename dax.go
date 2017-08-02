@@ -6,7 +6,7 @@ import (
 
 	//dax "github.com/dlespiau/dax/lib"
 	"github.com/dlespiau/dax/lib/flag"
-	"github.com/dlespiau/dax/lib/midi"
+	"github.com/dlespiau/dax/midi"
 )
 
 type Dax struct {
