@@ -1,6 +1,7 @@
-package dax
+package geometry
 
 import (
+	"github.com/dlespiau/dax"
 	"github.com/dlespiau/dax/math"
 )
 
@@ -34,9 +35,9 @@ func (s *Sphere) Init(radius float32, nVSegments, nHSegments int) {
 	s.InitFull(radius, nVSegments, nHSegments, 0, angle, 0, angle)
 }
 
-func (s *Sphere) GetMesh() *Mesh {
-	m := NewMesh()
-	var positions, normals, uvs AttributeBuffer
+func (s *Sphere) GetMesh() *dax.Mesh {
+	m := dax.NewMesh()
+	var positions, normals, uvs dax.AttributeBuffer
 
 	thetaEnd := s.thetaStart + s.thetaLength
 	vertexCount := (s.nVSegments + 1) * (s.nHSegments + 1)

@@ -105,7 +105,6 @@
 - Add a command to dax-examples to create a screenshot for each example.
 - Add a command to dax-examples a md file with screen shots of the examples.
 - License + headers
-- Move sphere into geometry
 - Have a separate Upload in Mesh
 - FB interface shouldn't have viewport and projection, camera should have that
 - SetScene on windows should de reflection to make sure there's a Scene
