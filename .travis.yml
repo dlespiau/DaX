@@ -12,6 +12,8 @@ addons:
 install:
     - go get golang.org/x/tools/cmd/cover
     - go get github.com/mattn/goveralls
+    - go get github.com/alecthomas/gometalinter
+    - gometalinter --install
 
 env:
     - secure: "b0uqnYilGqMkPTaEUPdwMC+0EV12F92nEoYMCvnXbg/5aBEdm6N3DNv3tHAvuwjUTPnUQnJygFJ/lfuYX8bXcO/ot4tmQYM2X4sHwxjWbukVSHOiZttueTZU1v20zDryKdJa1Ck/5tZPQFFrWWeI9DL7zTFDyol+sRwWlXyfmAHu7BL+K8Z3FXB6/a4ufDvK1shVGYlEH65Q1pSz2lYAvuLLpe/Q3bzli5iTjs1AIuTBFtQeE8FLgqBkZY1EkN0JMq6aP2+Vu+o4pqAm8v3nsR/CM7YJoGlEI+FJTOAJFsw+h329g3cxIbPQKyDiv4h8dp1BAeLVbNbmqg9dWo/7wk5b8jn6hfmKzI2i5n7Z7l4RZviFWy3zG/OFeS1acyWNH2Ws7+HZ26yM2naxo8dV5O3FeXk2waylXvwySG0SfeJCPjTZkIu0NCATqEdjduenqV990U4QovHS05njoVZzpqNaRgZTllFKlTMNF3LtlcFEz5VS2hDoCYoe9Ve4gM8fWCbFy3of5nEZHQCTf5PcB/wVTNWWEFmsliHO+F8vjxezUBVC5PDMdoCHAX76Ti2b3LYg/XhasI6W2FWHEuP5M/XII1AzSK5p9toGjfKwD4Wo/MLKyZgIvTuYxLQQ5hgJireWfnyIRIOV4G79mJJRsyyU+pIa+AOPsHbXTdfRYtw="
@@ -19,6 +21,7 @@ env:
 script:
     - ./scripts/build-all.sh
     - ./scripts/test-all.sh
+    - make check
 
 after_success:
     - $GOPATH/bin/goveralls -service=travis-ci -coverprofile=profile.cov

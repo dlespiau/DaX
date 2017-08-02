@@ -104,7 +104,8 @@ func (w *Window) doScreenshot() {
 	}
 
 	if n > 9999 {
-		fmt.Errorf("Too many Screenshots!")
+		// XXX: better way to report errors?
+		fmt.Fprintln(os.Stderr, "too many screenshots!")
 		return
 	}
 

@@ -66,13 +66,13 @@ func main() {
 	app.Name = "dax-examples"
 	app.Usage = "Show off what DaX can do"
 	app.Commands = []cli.Command{
-		cli.Command{
+		{
 			Name:      "run",
 			Usage:     "Run an example",
 			ArgsUsage: "<example name>",
 			Action:    run,
 		},
-		cli.Command{
+		{
 			Name:   "list",
 			Usage:  "Print the list of examples",
 			Action: list,

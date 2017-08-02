@@ -70,6 +70,9 @@ func (fb *onScreen) Screenshot() *image.RGBA {
 	gl.ReadPixels(0, 0, int32(fb.width), int32(fb.height), gl.RGBA,
 		gl.UNSIGNED_BYTE, unsafe.Pointer(&pixels[0]))
 
-	return &image.RGBA{pixels, fb.width * 4,
-		image.Rect(0, 0, fb.width, fb.height)}
+	return &image.RGBA{
+		Pix:    pixels,
+		Stride: fb.width * 4,
+		Rect:   image.Rect(0, 0, fb.width, fb.height),
+	}
 }
