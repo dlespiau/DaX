@@ -53,7 +53,7 @@ func (s *shapePolyline) Draw(fb dax.Framebuffer) {
 	fb.Draw(s.poly)
 }
 
-var shapePolylineExample = Example{
+var gfxPolylineExample = Example{
 	Category:    CategoryGraphics,
 	Name:        "Polyline",
 	Description: "Draw a polyline with your mouse",

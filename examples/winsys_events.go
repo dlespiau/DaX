@@ -26,7 +26,7 @@ func (s *eventsBasic) OnRuneEntered(r rune) {
 	fmt.Printf("Rune entered '%c'\n", r)
 }
 
-var eventsBasicExample = Example{
+var winsysEventsExample = Example{
 	Category:    CategoryWinsys,
 	Name:        "Events",
 	Description: "Print events received by the application on stdout",

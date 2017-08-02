@@ -55,9 +55,9 @@ func run(ctx *cli.Context) error {
 
 var daxExamples = &examples{
 	list: []*Example{
-		&eventsBasicExample,
-		&shapePolylineExample,
-		&sceneGraphBasicExample,
+		&gfxPolylineExample,
+		&gfxScenegraphExample,
+		&winsysEventsExample,
 	},
 }
 

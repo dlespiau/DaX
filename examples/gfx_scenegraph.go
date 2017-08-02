@@ -45,7 +45,7 @@ func (s *sceneGraphBasic) Draw(fb dax.Framebuffer) {
 	fb.Draw(s.sg)
 }
 
-var sceneGraphBasicExample = Example{
+var gfxScenegraphExample = Example{
 	Category:    CategoryGraphics,
 	Name:        "Scene Graph",
 	Description: "Display a few rotating cubes",
