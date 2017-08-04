@@ -2,19 +2,24 @@ package material
 
 import "github.com/dlespiau/dax"
 
+const (
+	colorProperty = "color"
+)
+
 // Color is the simplest material possible, just a color.
 type Color struct {
 	dax.BaseMaterial
-	color dax.Color
+	color      dax.ColorProperty
+	properties []dax.Property
 }
 
 var _ dax.Material = &Color{}
 
 // NewColor creates a new Color material.
 func NewColor(color *dax.Color) *Color {
-	return &Color{
-		color: *color,
-	}
+	m := &Color{}
+	m.color.Init(colorProperty, color)
+	return m
 }
 
 const colorFragmentShader = `
