@@ -3,6 +3,7 @@ package dax
 import (
 	"log"
 	"runtime"
+	"sync"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.1/glfw"
@@ -28,15 +29,19 @@ type Application struct {
 	windows map[*glfw.Window]*Window
 }
 
+var appInstance *Application
+var appOnce sync.Once
+
 // NewApplication creates a new Application. This is a singleton.
 func NewApplication(name string) *Application {
-	app := new(Application)
-	app.Name = name
-	app.windows = make(map[*glfw.Window]*Window)
-	return app
+	appOnce.Do(func() {
+		app := new(Application)
+		app.Name = name
+		app.windows = make(map[*glfw.Window]*Window)
+		appInstance = app
+	})
+	return appInstance
 }
-
-var _app *Application
 
 func (app *Application) addWindow(window *Window) {
 	// TODO: support multiple windows
@@ -57,8 +62,6 @@ func (app *Application) Run() {
 
 // CreateWindow creates a window on which scene will be drawn.
 func (app *Application) CreateWindow(name string, width, height int) *Window {
-	_app = app
-
 	window := newWindow(app, name, width, height)
 	app.addWindow(window)
 
@@ -66,5 +69,5 @@ func (app *Application) CreateWindow(name string, width, height int) *Window {
 }
 
 func getWindow(w *glfw.Window) *Window {
-	return _app.windows[w]
+	return appInstance.windows[w]
 }
